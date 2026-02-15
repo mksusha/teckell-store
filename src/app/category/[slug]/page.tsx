@@ -60,56 +60,58 @@ export default async function CategoryPage({ params }: Props) {
     return (
         <div>
             <Header></Header>
-        <div className="min-h-screen bg-white">
-            {/* Hero секция - как в оригинале Teckell */}
-            <div className="relative w-full mt-24 h-[300px] md:h-[400px] overflow-hidden">
-                <div className="absolute inset-0">
-                    <Image
-                        src={category.heroImage}
-                        alt={category.name}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-black/40" />
-                </div>
-                <div className="relative container mx-auto px-6 h-full flex flex-col items-center justify-center text-center">
-                    {/* Хлебные крошки */}
-                    <div className="flex items-center gap-3 mb-4">
-                        <Link href="/" className="text-white/80 hover:text-white transition-colors text-sm uppercase tracking-[2px]">
-                            Главная
-                        </Link>
-                        <span className="text-white/50">/</span>
-
-                        <span className="text-white text-sm uppercase tracking-[2px]">{category.name}</span>
+            <div className="min-h-screen bg-white">
+                {/* Hero секция - как в оригинале Teckell */}
+                <div className="relative w-full  h-[300px] md:h-[400px] overflow-hidden">
+                    <div className="absolute inset-0">
+                        <Image
+                            src="/images/cart.webp"
+                            alt="Shopping cart"
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                        <div className="absolute inset-0 bg-black/40"/>
                     </div>
+                    <div
+                        className="relative container mx-auto px-6 mt-5 h-full flex flex-col items-center justify-center text-center">
+                        {/* Хлебные крошки */}
+                        <div className="flex items-center gap-3 mb-4">
+                            <Link href="/"
+                                  className="text-white/80 hover:text-white transition-colors text-sm uppercase tracking-[2px]">
+                                Главная
+                            </Link>
+                            <span className="text-white/50">/</span>
 
-                    {/* Название категории на английском */}
-                    <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-serif mb-4 tracking-[0.15em] uppercase">
-                        {category.nameEn}
-                    </h1>
+                            <span className="text-white text-sm uppercase tracking-[2px]">{category.name}</span>
+                        </div>
 
-                    {/* Количество товаров */}
-                    <p className="text-white/90 text-sm md:text-base max-w-2xl font-light">
-                        {products.length} {getProductWord(products.length)}
-                    </p>
+                        {/* Название категории на английском */}
+                        <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-serif mb-4 tracking-[0.15em] uppercase">
+                            {category.nameEn}
+                        </h1>
+
+                        {/* Количество товаров */}
+                        <p className="text-white/90 text-sm md:text-base max-w-2xl font-light">
+                            {products.length} {getProductWord(products.length)}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Основной контент */}
+                <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+                    <CategoryClient
+                        categorySlug={slug}
+                        initialProducts={products}
+                        categoryName={category.name}
+                        productCount={products.length}
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}
+                        categories={allCategories}
+                        category={category}
+                    />
                 </div>
             </div>
-
-            {/* Основной контент */}
-            <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
-                <CategoryClient
-                    categorySlug={slug}
-                    initialProducts={products}
-                    categoryName={category.name}
-                    productCount={products.length}
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
-                    categories={allCategories}
-                    category={category}
-                />
-            </div>
-        </div>
         </div>
     );
 }

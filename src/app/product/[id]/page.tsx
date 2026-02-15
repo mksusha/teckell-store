@@ -5,6 +5,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts, getCategoryBySlug, formatPrice } from "@/data/categories";
 import { ProductClient } from "./ProductClient";
+import {Header} from "@/components/Header";
+import {Footer} from "@/components/Footer";
 
 interface Props {
     params: Promise<{
@@ -49,10 +51,14 @@ export default async function ProductPage({ params }: Props) {
     const relatedProducts = getRelatedProducts(id, 4);
 
     return (
+        <div>
+            <Header></Header>
         <ProductClient
             product={product}
             category={category}
             relatedProducts={relatedProducts}
         />
+            <Footer></Footer>
+        </div>
     );
 }

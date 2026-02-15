@@ -4,8 +4,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Heart, Ruler, Maximize2 } from "lucide-react";
+import { Heart, Ruler, Maximize2 } from "lucide-react";
 import { Product, Category, formatPrice, getBrandTab, getShippingTab, getMoreProductsButton } from "@/data/categories";
+import { SizeGuideModal } from "@/components/SizeGuideModal";
+import { CartWidget } from "@/components/CartWidget";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductClientProps {
     product: Product;
@@ -18,6 +21,11 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
     const [activeImage, setActiveImage] = useState(0);
     const [customization, setCustomization] = useState("");
     const [activeTab, setActiveTab] = useState("description");
+    const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+    const [isCartWidgetOpen, setIsCartWidgetOpen] = useState(false);
+
+    // Хук корзины
+    const { items, addToCart, removeFromCart, updateQuantity } = useCart();
 
     // Получаем стандартные табы с возможностью переопределения
     const brandTab = getBrandTab(product);
@@ -33,8 +41,33 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
 
     // Обработчик добавления в корзину
     const handleAddToCart = () => {
+        // Создаем вариации товара (если есть)
+        const variations = [];
+
+        // Добавляем кастомизацию как вариацию, если она есть
+        if (customization) {
+            variations.push({
+                name: "Гравировка",
+                value: customization
+            });
+        }
+
+        // Добавляем в корзину
+        addToCart({
+            product_id: product.id,
+            name: product.name,
+            sku: product.sku,
+            price: product.price,
+            quantity: quantity,
+            currency: '€',
+            image: product.image,
+            variations: variations.length > 0 ? variations : undefined
+        });
+
+        // Открываем виджет корзины после добавления
+        setIsCartWidgetOpen(true);
+
         console.log(`Добавлено в корзину: ${product.id}, количество: ${quantity}, гравировка: ${customization || 'нет'}`);
-        // Здесь будет API вызов
     };
 
     // Обработчик добавления в избранное
@@ -44,7 +77,7 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
     };
 
     return (
-        <div className="min-h-screen bg-[#F9F9F9]">
+        <div className="min-h-screen mt-26 bg-[#F9F9F9]">
             <div className="container mx-auto px-4 md:px-6 py-4">
                 {/* Хлебные крошки */}
                 <div className="flex items-center text-sm text-gray-600 mb-6">
@@ -71,19 +104,21 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                                         <button
                                             key={index}
                                             onClick={() => setActiveImage(index)}
-                                            className={`flex-shrink-0 w-20 h-20 border-2 transition-all ${
+                                            className={`flex-shrink-0 w-20 h-20 border-2 transition-all relative ${
                                                 activeImage === index
                                                     ? "border-[#aea062] opacity-100"
                                                     : "border-transparent opacity-60 hover:opacity-100"
                                             }`}
                                         >
-                                            <Image
-                                                src={images[activeImage] || product.image || ''} // ← Добавляем fallback на пустую строку
-                                                alt={product.name}
-                                                fill
-                                                className="object-contain p-6 md:p-8"
-                                                priority
-                                            />
+                                            {img && (
+                                                <Image
+                                                    src={img}
+                                                    alt={`${product.name} - миниатюра ${index + 1}`}
+                                                    fill
+                                                    unoptimized
+                                                    className="object-contain p-2"
+                                                />
+                                            )}
                                         </button>
                                     ))}
                                 </div>
@@ -265,7 +300,10 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                                     <Heart size={18} className="group-hover:scale-110 transition-transform" />
                                     <span>В избранное</span>
                                 </button>
-                                <button className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#aea062] transition-colors group">
+                                <button
+                                    onClick={() => setIsSizeGuideOpen(true)}
+                                    className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#aea062] transition-colors group"
+                                >
                                     <Ruler size={18} className="group-hover:scale-110 transition-transform" />
                                     <span>Таблица размеров</span>
                                 </button>
@@ -345,7 +383,7 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                                             {product.description || product.shortDescription || "Описание товара временно отсутствует."}
                                         </p>
 
-                                        {/* Характеристики */}
+                                        {/* Характеристики из attributes */}
                                         {product.attributes && product.attributes.length > 0 && (
                                             <div className="mt-8">
                                                 <h3 className="text-xl font-serif mb-4 text-gray-800">Характеристики</h3>
@@ -370,7 +408,7 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                             </div>
                         )}
 
-                        {/* ТАБ: О БРЕНДЕ - СТАНДАРТНЫЙ ДЛЯ ВСЕХ */}
+                        {/* ТАБ: О БРЕНДЕ */}
                         {activeTab === "brand" && (
                             <div className="flex flex-col md:flex-row gap-8">
                                 <div className="md:w-1/3">
@@ -441,7 +479,7 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                             </div>
                         )}
 
-                        {/* ТАБ: ДОСТАВКА - СТАНДАРТНЫЙ ДЛЯ ВСЕХ */}
+                        {/* ТАБ: ДОСТАВКА */}
                         {activeTab === "shipping" && (
                             <div className="flex flex-col md:flex-row gap-8">
                                 <div className="md:w-1/2">
@@ -510,6 +548,43 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                     </div>
                 )}
             </div>
+
+            {/* Модальное окно с таблицей размеров */}
+            <pre style={{display: 'none'}}>
+    {JSON.stringify({
+        hasDimensions: !!product.dimensions,
+        hasWeight: !!product.weight,
+        hasPackaging: !!product.packaging,
+        hasAssemblyRequired: !!product.assemblyRequired,
+        dimensionsValue: product.dimensions,
+        weightValue: product.weight
+    }, null, 2)}
+</pre>
+
+            <SizeGuideModal
+                isOpen={isSizeGuideOpen}
+                onClose={() => setIsSizeGuideOpen(false)}
+                productName={product.name}
+                productData={{
+                    dimensions: product.dimensions,
+                    weight: product.weight,
+                    packaging: product.packaging,
+                    assemblyRequired: product.assemblyRequired,
+                    attributes: product.attributes,
+                    sizeGuideImage: product.sizeGuideImage,
+                    sizeGuideImageWidth: product.sizeGuideImageWidth,
+                    sizeGuideImageHeight: product.sizeGuideImageHeight,
+                    sizeGuideImage2: product.sizeGuideImage2,
+                    sizeGuideImage2Width: product.sizeGuideImage2Width,
+                    sizeGuideImage2Height: product.sizeGuideImage2Height
+                }}
+            />
+
+            {/* Виджет корзины */}
+            <CartWidget
+                isOpen={isCartWidgetOpen}
+                onClose={() => setIsCartWidgetOpen(false)}
+            />
         </div>
     );
 }

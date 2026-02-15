@@ -32,6 +32,24 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'teckell.store',
+                port: '',
+                pathname: '/wp-content/**', // Разрешаем все пути из wp-content
+            },
+            {
+                protocol: 'https',
+                hostname: 'teckell.store',
+                port: '',
+                pathname: '/wp-content/uploads/**', // Более точный путь
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.sanity.io',
+                port: '',
+                pathname: '/images/**', // или '/**', если нужны все пути
+            },
+            {
+                protocol: 'https',
                 hostname: 'plus.unsplash.com',
                 port: '',
                 pathname: '/**',

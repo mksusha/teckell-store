@@ -48,7 +48,7 @@ export function HeroSection() {
     }, [slides.length]);
 
     return (
-        <section className="relative w-full h-screen min-h-[600px] max-h-[800px] mt-16 md:mt-[100px] overflow-hidden">
+        <section className="relative w-full h-screen min-h-[600px] max-h-[800px]  overflow-hidden">
             {/* Полноэкранные слайды с реальными фото Teckell */}
             {slides.map((slide, index) => (
                 <div

@@ -34,10 +34,20 @@ const config: Config = {
                 accent: {
                     DEFAULT: "hsl(var(--accent))",
                     foreground: "hsl(var(--accent-foreground))",
+                    // Добавляем кастомные акцентные цвета
+                    btn: {
+                        DEFAULT: "rgb(207, 181, 59)",
+                        hover: "rgb(193, 168, 56)",
+                    },
                 },
                 card: {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
+                },
+                // Добавляем отдельную секцию для брендовых цветов
+                brand: {
+                    accent: "rgb(207, 181, 59)",
+                    "accent-hover": "rgb(193, 168, 56)",
                 },
             },
             borderRadius: {
