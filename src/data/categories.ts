@@ -1,4 +1,16 @@
 // data/categories.ts
+export interface HeroSection {
+    subtitle: string;
+    title: string;
+    quote: string;
+    buttonAddToCart: string;
+    buttonViewMore: string;
+    backgroundImage: string;
+    dataId: string;
+    dataSettings: {
+        background_background: string;
+    };
+}
 
 // ============ ИНТЕРФЕЙСЫ ============
 export interface Product {
@@ -16,6 +28,7 @@ export interface Product {
     isLimited?: boolean;      // "Лимитированная серия"
     description?: string;
     specs?: string[];
+    heroSection?: HeroSection; // ✅ опциональное поле
 
     // Для страницы товара
     sku?: string;
@@ -115,7 +128,6 @@ export const allProducts: Product[] = [
         price: 16000,
         priceSuffix: "без НДС",
         image: "https://teckell.store/wp-content/uploads/2025/07/Teckell-Cristallino-for-Pirelli-001-768x922.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2025/07/Teckell-Cristallino-for-Pirelli-002.png",
         isLimited: true,
         inStock: true,
         stockStatus: "В наличии",
@@ -1720,124 +1732,587 @@ export const allProducts: Product[] = [
 
     // ============ ШАХМАТЫ (SCACCO) ============
     {
-        id: "stratego-black",
-        name: "Stratego Black",
-        category: "Шахматы",
-        categorySlug: "scacco",
-        price: 7000,
-        priceMax: 10000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Black-S-1-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Black-S-2-667x800.png",
-        inStock: true,
-        stockStatus: "В наличии",
-        isVariable: true,
-
-        shortDescription: "Шахматный стол из черного мрамора Marquina."
+        "id": "stratego-black",
+        "name": "Стол для игр Stratego Black",
+        "nameEn": "Stratego Black",
+        "category": "Шахматы",
+        "categorySlug": "scacco",
+        "price": 7000,
+        "priceMax": 10000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Black-S-1-667x800.png",
+        "hoverImage": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Black-S-2-667x800.png",
+        "inStock": true,
+        "stockStatus": "В наличии",
+        "isVariable": true,
+        "shortDescription": "Многофункциональная игровая доска из черного мрамора Marquina.",
+        "fullDescription": "<ul><li><strong>Основание:</strong> Черный мрамор Marquina с простой магнитной системой открывания.</li><li><strong>Игровые поля:</strong> Одна доска позволяет играть в четыре разные игры благодаря сменным гравированным тонким металлическим листам:<br><strong>1</strong> Шахматы и Шашки<br><strong>2</strong> Ludo<br><strong>3</strong> Нарды<br><strong>4</strong> Китайские шахматы (Сянци)</li><li><strong>Столешница:</strong> Из закаленного стекла с низким содержанием железа.</li><li><strong>Шахматные фигуры:</strong> Фигуры из точеных цилиндров из экстра-прозрачного боросиликатного стекла, декорированные латунью с покрытием 24-каратным золотом и хромом.<br><br><em>Предназначено для использования в помещении.</em></li></ul>",
+        "brand": "Teckell",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwODU4NC00Mjc5JnRva2VuPTY1MjRiMDM1NDc4OWRiNzA.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell" },
+            { "name": "Основной материал", "value": "Черный мрамор Marquina, стекло" },
+            { "name": "Материал фигур", "value": "Боросиликатное стекло с 24-каратным золотом / хромом" },
+            { "name": "Количество игр", "value": "4 (в зависимости от комплектации)" },
+            { "name": "Дизайн", "value": "Для помещений" },
+            { "name": "Страна производства", "value": "Италия" }
+        ],
+        "dimensions": {
+            "length": "52 см",
+            "width": "52 см",
+            "height": "4.5 см"
+        },
+        "weight": "28 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 60 Ш 60 В 36 см | Д 23 1⁄2\" Ш 23 1⁄2\" В 14\"",
+            "weight": "48 кг | 106 lbs"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtU2NhY2NvX01hcnF1aW5hLUJsYWNrLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA2MTM2LTY5NjQwJnRva2VuPTgxNjdiYzYzNGRlZTdiMDY.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Всегда авангард, эксперименты, удивление. Это столпы, на которых основаны инновационные исследования основателя Teckell Джанфранко Барбана. «Нам не интересно быть консервативными. Объект должен меняться в соответствии с нашей интуицией, а не наоборот.</p><p><em>Исследования и разработки должны быть непрерывными; идеи для улучшения продуктов часто приходят из разных миров и образов мышления.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC0xNzB4NTAucG5nJmNhY2hlTWFya2VyPTE3NzA0MDg1ODYtMTc5MCZ0b2tlbj03ZjJkNTI2NjNkMjQ3NGVj.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "cristallino-black",
+            "teckell-ciclotte-black",
+            "t-1-1-black"
+        ]
     },
     {
-        id: "stratego-white",
-        name: "Stratego White",
-        category: "Шахматы",
-        categorySlug: "scacco",
-        price: 7000,
-        priceMax: 10000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-White-S-1-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-White-S-2-667x800.png",
-        inStock: true,
-        stockStatus: "В наличии",
-        isVariable: true
+        "id": "stratego-white",
+        "name": "Стол для игр Stratego White",
+        "nameEn": "Stratego White",
+        "category": "Шахматы",
+        "categorySlug": "scacco",
+        "price": 7000,
+        "priceMax": 10000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-White-S-1-667x800.png",
+        "hoverImage": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-White-S-2-667x800.png",
+        "inStock": true,
+        "stockStatus": "В наличии",
+        "isVariable": true,
+        "shortDescription": "Многофункциональная игровая доска из белого мрамора Calacatta.",
+        "fullDescription": "<ul><li><strong>Основание:</strong> Белый мрамор Calacatta с простой магнитной системой открывания.</li><li><strong>Игровые поля:</strong> Одна доска позволяет играть в четыре разные игры благодаря сменным гравированным тонким металлическим листам:<br><strong>1</strong> Шахматы и Шашки<br><strong>2</strong> Ludo<br><strong>3</strong> Нарды<br><strong>4</strong> Китайские шахматы (Сянци)</li><li><strong>Столешница:</strong> Из закаленного стекла с низким содержанием железа.</li><li><strong>Шахматные фигуры:</strong> Фигуры из точеных цилиндров из экстра-прозрачного боросиликатного стекла, декорированные латунью с покрытием 24-каратным золотом и хромом.<br><br><em>Предназначено для использования в помещении.</em></li></ul>",
+        "brand": "Teckell",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwODU4NC00Mjc5JnRva2VuPTY1MjRiMDM1NDc4OWRiNzA.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell" },
+            { "name": "Основной материал", "value": "Белый мрамор Calacatta, стекло" },
+            { "name": "Материал фигур", "value": "Боросиликатное стекло с 24-каратным золотом / хромом" },
+            { "name": "Количество игр", "value": "4 (в зависимости от комплектации)" },
+            { "name": "Дизайн", "value": "Для помещений" },
+            { "name": "Страна производства", "value": "Италия" }
+        ],
+        "dimensions": {
+            "length": "52 см",
+            "width": "52 см",
+            "height": "4.5 см"
+        },
+        "weight": "28 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 60 Ш 60 В 36 см | Д 23 1⁄2\" Ш 23 1⁄2\" В 14\"",
+            "weight": "48 кг | 106 lbs"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtU2NhY2NvX0NhbGFjYXR0YS1XaGl0ZS5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwNjE1Ni02OTAyOCZ0b2tlbj1hMzhiZDk3YTRhZDg2MjRj.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Всегда авангард, эксперименты, удивление. Это столпы, на которых основаны инновационные исследования основателя Teckell Джанфранко Барбана. «Нам не интересно быть консервативными. Объект должен меняться в соответствии с нашей интуицией, а не наоборот.</p><p><em>Исследования и разработки должны быть непрерывными; идеи для улучшения продуктов часто приходят из разных миров и образов мышления.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC0xNzB4NTAucG5nJmNhY2hlTWFya2VyPTE3NzA0MDg1ODYtMTc5MCZ0b2tlbj03ZjJkNTI2NjNkMjQ3NGVj.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "90-minuto-matte",
+            "cristallino-outdoor"
+        ]
     },
     {
-        id: "stratego-wood",
-        name: "Stratego Wood",
-        category: "Шахматы",
-        categorySlug: "scacco",
-        price: 7000,
-        priceMax: 10000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Wood-S-1-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Wood-S-2-667x800.png",
-        inStock: true,
-        stockStatus: "В наличии",
-        isVariable: true
+        "id": "stratego-wood",
+        "name": "Стол для игр Stratego Wood",
+        "nameEn": "Stratego Wood",
+        "category": "Шахматы",
+        "categorySlug": "scacco",
+        "price": 7000,
+        "priceMax": 10000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Wood-S-1-667x800.png",
+        "hoverImage": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Sratego-Wood-S-2-667x800.png",
+        "inStock": true,
+        "stockStatus": "В наличии",
+        "isVariable": true,
+        "shortDescription": "Многофункциональная игровая доска из орехового дерева.",
+        "fullDescription": "<ul><li><strong>Основание:</strong> Массив орехового дерева (каналетто) с простой магнитной системой открывания.</li><li><strong>Игровые поля:</strong> Одна доска может использоваться для четырех различных игр благодаря сменным гравированным тонким металлическим листам:<br><strong>1</strong> Шахматы и Шашки<br><strong>2</strong> Ludo (Чапаев)<br><strong>3</strong> Нарды<br><strong>4</strong> Китайские шахматы (Сянци)</li><li><strong>Столешница:</strong> Из закаленного стекла с низким содержанием железа.</li><li><strong>Шахматные фигуры:</strong> Фигуры из точеных цилиндров из экстра-прозрачного боросиликатного стекла, декорированные латунью с покрытием 24-каратным золотом и хромом.<br><br><em>Предназначено для использования в помещении.</em></li></ul>",
+        "brand": "Teckell",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwODU4NC00Mjc5JnRva2VuPTY1MjRiMDM1NDc4OWRiNzA.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell" },
+            { "name": "Основной материал", "value": "Массив орехового дерева (каналетто), стекло" },
+            { "name": "Материал фигур", "value": "Боросиликатное стекло с 24-каратным золотом / хромом" },
+            { "name": "Количество игр", "value": "4 (в зависимости от комплектации)" },
+            { "name": "Дизайн", "value": "Для помещений" },
+            { "name": "Страна производства", "value": "Италия" }
+        ],
+        "dimensions": {
+            "length": "52 см",
+            "width": "52 см",
+            "height": "4.5 см"
+        },
+        "weight": "28 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 60 Ш 60 В 36 см | Д 23 1/2\" Ш 23 1/2\" В 14\"",
+            "weight": "48 кг | 106 фунтов"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtU2NhY2NvX1dhbG51dC1Xb29kLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA2MTE1LTY4NTI2JnRva2VuPWU5MDI3NmM5ZDMwZTZjMTg.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Всегда авангард, эксперименты, удивление. Это столпы, на которых основаны инновационные исследования основателя Teckell Джанфранко Барбана. «Нам не интересно быть консервативными. Объект должен меняться в соответствии с нашей интуицией, а не наоборот.</p><p><em>Исследования и разработки должны быть непрерывными; идеи для улучшения продуктов часто приходят из разных миров и образов мышления.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC0xNzB4NTAucG5nJmNhY2hlTWFya2VyPTE3NzA0MDg1ODYtMTc5MCZ0b2tlbj03ZjJkNTI2NjNkMjQ3NGVj.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "90-minuto-matte",
+            "cristallino-outdoor"
+        ]
     },
-
     // ============ ФИТНЕС ============
     {
-        id: "ciclotte-glossy",
-        name: "Teckell Ciclotte Glossy",
-        category: "Фитнес",
-        categorySlug: "fitness",
-        price: 14700,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Chrome-S-1-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Chrome-S-2-667x800.png",
-        inStock: true,
-        stockStatus: "Под заказ",
+        "id": "ciclotte-glossy",
+        "name": "Teckell Ciclotte Glossy",
+        "nameEn": "Teckell Ciclotte Glossy",
+        "category": "Фитнес",
+        "categorySlug": "fitness",
+        "price": 14700,
 
-        shortDescription: "Дизайнерский велотренажер с глянцевой отделкой."
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Chrome-S-1-667x800.png",
+        "inStock": true,
+        "stockStatus": "Под заказ",
+        "isVariable": true,
+        "shortDescription": "Дизайнерский велотренажер с глянцевой отделкой. Девиз Teckell «Взгляд в будущее итальянского дизайна» встречается с философией дизайна Ciclotte «Ride on design» в этом экстраординарном велотренажере.",
+        "fullDescription": "<ul><li><strong>Стеклянный диск:</strong> 30-мм стеклянный диск заменяет оригинальную круглую раму велосипеда, создавая потрясающий элегантный вид. Рама из стали и лазерной резки многослойного стекла: внешние слои из закаленного стекла, внутренний слой из упрочненного стекла.</li><li><strong>Рама:</strong> Полированная нержавеющая сталь.</li><li><strong>Основание:</strong> Гибкое основание с хромированной отделкой повторяет движения тела. Рама прогибается в стороны под нагрузкой, как при езде на велосипеде по дороге.</li><li><strong>Руль:</strong> Эргономичная вертикальная конструкция руля и грипсы. Руль регулируется по высоте и углу наклона.</li><li><strong>Педали:</strong> Благодаря необычно компактной трансмиссии расстояние между педалями составляет всего 6 см. Этот узкий зазор помогает избежать проблем с суставами.</li><li><strong>Седло:</strong> Гелевое седло гоночного велосипеда с отделкой для использования как для велоспорта, так и для сайклинга. Регулируется по высоте и углу наклона. Седло имеет стандартное крепление, позволяющее заменить его на другое по вашему выбору.<br>- <em><strong>Шаг:</strong></em> 16 мм<br>- <em><strong>Общий ход:</strong> </em>21 см<br>- <em><strong>Максимальный вес пользователя:</strong></em> 118 кг</li><li><strong>Особенности тренировок:</strong> Высокоэффективные тренировки возможны благодаря регулируемой системе магнитного сопротивления (12 магнитов и маховик составляют трансмиссию). Маховик вращается с высокой скоростью благодаря системе, умножающей обороты педалей, усиливая магнитное поле. Трансмиссия с редуктором имитирует гоночный велосипед. Электрическая система регулирует сопротивление.</li><li><strong>Подключение:</strong> Этот велотренажер с Bluetooth оснащен прочной подставкой (только черная) для смартфона или планшета. Смотрите фильмы, слушайте музыку или следуйте по смоделированным трассам с помощью специального приложения, совместимого с Android/iOS, которое также отслеживает скорость и расстояние. Имеет 10 уровней точной настройки сопротивления.</li><li><strong>Сертификаты:</strong> ЕС / США / КИТАЙ</li><li><strong>Запатентованный дизайн:</strong> Охраняется международным промышленным образцом.<br><br><em>Предназначено для использования в помещении.</em></li></ul>",
+        "brand": "Teckell / Ciclotte",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwODU4NC00Mjc5JnRva2VuPTY1MjRiMDM1NDc4OWRiNzA.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell, Ciclotte" },
+            { "name": "Основной материал", "value": "Полированная нержавеющая сталь, многослойное стекло" },
+            { "name": "Материал диска", "value": "30-мм стекло (закаленное/упрочненное)" },
+            { "name": "Система сопротивления", "value": "Регулируемая магнитная (12 уровней)" },
+            { "name": "Макс. вес пользователя", "value": "118 кг" },
+            { "name": "Подключение", "value": "Bluetooth, приложение для iOS/Android" },
+            { "name": "Регулировки", "value": "Руль и седло (высота, угол наклона)" },
+            { "name": "Дизайн", "value": "Для помещений" },
+            { "name": "Страна производства", "value": "Италия" }
+        ],
+        "dimensions": {
+            "length": "111 см",
+            "width": "50 см",
+            "height": "111 см"
+        },
+        "weight": "96 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 100 Ш 80 В 120 см | Д 39 1/4\" Ш 31 1/2\" В 47 1/4\"",
+            "weight": "110 кг | 243 фунта"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtRml0bmVzcy1DaHJvbWUucG5nJmNhY2hlTWFya2VyPTE3NzA0MDU2MjQtNTM4MzAmdG9rZW49NmFiMmNkNzRhNjJkODA5MQ.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Всегда авангард, эксперименты, удивление. Это столпы, на которых основаны инновационные исследования основателя Teckell Джанфранко Барбана. «Нам не интересно быть консервативными. Объект должен меняться в соответствии с нашей интуицией, а не наоборот.</p><p><em>Исследования и разработки должны быть непрерывными; идеи для улучшения продуктов часто приходят из разных миров и образов мышления.</em></p><p class=\"page_subtit internal\">Девиз Teckell «Взгляд в будущее итальянского дизайна» встречается с философией дизайна Ciclotte «Ride on design» в этом экстраординарном велотренажере.</p><p><em>Этот шедевр воплощает в себе технологический опыт и тщательное мастерство двух брендов.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtQ2ljbG90dGUtMTcweDUwLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA4NTgzLTE1OTYmdG9rZW49MTJhNWUyYzdiMmMwNzJlNg.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "teckell-ciclotte-black",
+            "90-minuto-matte",
+            "cristallino-outdoor"
+        ]
     },
     {
-        id: "ciclotte-black",
-        name: "Teckell Ciclotte Black",
-        category: "Фитнес",
-        categorySlug: "fitness",
-        price: 14000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Black-S-1-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Black-S-2-667x800.png",
-        inStock: true,
-        stockStatus: "В наличии"
+        "id": "teckell-ciclotte-black",
+        "name": "Teckell Ciclotte Black",
+        "nameEn": "Teckell Ciclotte Black",
+        "category": "Фитнес",
+        "categorySlug": "fitness",
+        "price": 14000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2022/09/Teckell-Ciclotte-Black-S-1-667x800.png",
+        "inStock": true,
+        "stockStatus": "В наличии",
+        "isVariable": true,
+        "shortDescription": "Девиз Teckell «Взгляд в будущее итальянского дизайна» встречается с философией дизайна Ciclotte «Ride on design» в этом экстраординарном велотренажере.",
+        "fullDescription": "<ul><li><strong>Стеклянный диск:</strong> 30-мм стеклянный диск заменяет оригинальную круглую раму велосипеда, создавая потрясающий элегантный вид. Рама из стали и лазерной резки многослойного стекла: внешние слои из закаленного стекла, внутренний слой из упрочненного стекла.</li><li><strong>Рама:</strong> Полированная нержавеющая сталь с черным лакированным покрытием.</li><li><strong>Основание:</strong> Гибкое основание с хромированной отделкой повторяет движения тела. Рама прогибается в стороны под нагрузкой, как при езде на велосипеде по дороге.</li><li><strong>Руль:</strong> Эргономичная вертикальная конструкция руля и грипсы. Руль регулируется по высоте и углу наклона.</li><li><strong>Педали:</strong> Благодаря необычно компактной трансмиссии расстояние между педалями составляет всего 6 см. Этот узкий зазор помогает избежать проблем с суставами.</li><li><strong>Седло:</strong> Гелевое седло гоночного велосипеда с отделкой для использования как для велоспорта, так и для сайклинга. Регулируется по высоте и углу наклона. Седло имеет стандартное крепление, позволяющее заменить его на другое по вашему выбору.<br>- <em><strong>Шаг:</strong></em> 16 мм<br>- <em><strong>Общий ход:</strong> </em>21 см<br>- <em><strong>Максимальный вес пользователя:</strong></em> 118 кг</li><li><strong>Особенности тренировок:</strong> Высокоэффективные тренировки возможны благодаря регулируемой системе магнитного сопротивления (12 магнитов и маховик составляют трансмиссию). Маховик вращается с высокой скоростью благодаря системе, умножающей обороты педалей, усиливая магнитное поле. Трансмиссия с редуктором имитирует гоночный велосипед. Электрическая система регулирует сопротивление.</li><li><strong>Подключение:</strong> Этот велотренажер с Bluetooth оснащен прочной подставкой (только для черной модели) для смартфона или планшета. Смотрите фильмы, слушайте музыку или следуйте по смоделированным трассам с помощью специального приложения, совместимого с Android/iOS, которое также отслеживает скорость и расстояние. Имеет 10 уровней точной настройки сопротивления.</li><li><strong>Сертификаты:</strong> ЕС / США / КИТАЙ</li><li><strong>Запатентованный дизайн:</strong> Охраняется международным промышленным образцом.<br><br><em>Предназначено для использования в помещении.</em></li></ul>",
+        "brand": "Teckell / Ciclotte",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGVja2VsbC5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwODU4NC00Mjc5JnRva2VuPTY1MjRiMDM1NDc4OWRiNzA.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell, Ciclotte" },
+            { "name": "Основной материал", "value": "Нержавеющая сталь с черной лакировкой, многослойное стекло" },
+            { "name": "Материал диска", "value": "30-мм стекло (закаленное/упрочненное)" },
+            { "name": "Система сопротивления", "value": "Регулируемая магнитная (12 уровней)" },
+            { "name": "Макс. вес пользователя", "value": "118 кг" },
+            { "name": "Подключение", "value": "Bluetooth, приложение для iOS/Android, подставка для гаджета" },
+            { "name": "Регулировки", "value": "Руль и седло (высота, угол наклона)" },
+            { "name": "Дизайн", "value": "Для помещений" },
+            { "name": "Страна производства", "value": "Италия" }
+        ],
+        "dimensions": {
+            "length": "111 см",
+            "width": "50 см",
+            "height": "111 см"
+        },
+        "weight": "96 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 100 Ш 80 В 120 см | Д 39 1/4\" Ш 31 1/2\" В 47 1/4\"",
+            "weight": "110 кг | 243 фунта"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtRml0bmVzc19JY29uLVN3YXRjaC1CbGFjay5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwNTYzOC01MzY1NSZ0b2tlbj04ODdiMTkwMmFmYzIxNDcx.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Всегда авангард, эксперименты, удивление. Это столпы, на которых основаны инновационные исследования основателя Teckell Джанфранко Барбана. «Нам не интересно быть консервативными. Объект должен меняться в соответствии с нашей интуицией, а не наоборот.</p><p><em>Исследования и разработки должны быть непрерывными; идеи для улучшения продуктов часто приходят из разных миров и образов мышления.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtQ2ljbG90dGUtMTcweDUwLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA4NTgzLTE1OTYmdG9rZW49MTJhNWUyYzdiMmMwNzJlNg.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "teckell-ciclotte-glossy",
+            "effetto-71",
+            "90-minuto-matte"
+        ]
     },
 
     // ============ ЧАСЫ ============
     {
-        id: "presto",
-        name: "Presto",
-        category: "Часы",
-        categorySlug: "timepieces",
-        price: 25000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Presto-White-001-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Presto-White-002.png",
-        inStock: true,
-        stockStatus: "Под заказ",
-
-        shortDescription: "Настольные часы из коллекции Takto."
+        "id": "presto",
+        "name": "Presto",
+        "nameEn": "Presto",
+        "category": "Часы",
+        "categorySlug": "timepieces",
+        "price": 25000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Presto-White-001-667x800.png",
+        "inStock": true,
+        "stockStatus": "Под заказ",
+        "isVariable": true,
+        "shortDescription": "Современное определение времени.",
+        "fullDescription": "<ul><li>Маятниковый стержень из инвара, металлического сплава с очень низким коэффициентом теплового расширения, с компенсационной трубкой для температурных изменений.</li><li>Градуированный ободок на маятнике для регулировки времени.</li><li>Вал из нержавеющей стали, вращение на 15 шарикоподшипниках, вильчатая передача, толкатель с одной стороны. Регулировочный винт вилки с рубиновым наконечником для низкого коэффициента трения.</li><li>Частота биений: 5400/ч</li><li>Привод: заводная пружина</li><li>Подшипники установлены и отрегулированы непосредственно на стеклянной конструкции с помощью компьютерного числового управления (CNC).</li><li>Рама из тонкого стального листа с текстурой и отделкой, внутри обтянута белой замшевой тканью. Задняя панель из зеркала из особо прозрачного стекла с кислотным матированием.</li><li>Шестерни и трибы с покрытием из золота 24 карата.</li><li>Кристаллическая стеклянная конструкция, диски толщиной 1/2 дюйма.</li><li>Автономность завода: 30 дней</li><li>Подвесная пружина.</li><li>Анкерный спуск Грэма.</li><li>Алюминиевая линза-боб.</li><li>С пружинным заводом.</li><li>Предназначено для использования в помещении</li></ul>",
+        "brand": "Takto",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGFrdG8ucG5nJmNhY2hlTWFya2VyPTE3NzA0MDg1ODctNTExOCZ0b2tlbj0yZTE5ZmY3MGMxNmM2NTcx.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Takto" },
+            { "name": "Тип", "value": "Настенные часы-маятник" },
+            { "name": "Материал корпуса", "value": "Сталь, многослойное стекло" },
+            { "name": "Материал маятника", "value": "Инвар (сплав)" },
+            { "name": "Материал шестерен", "value": "Латунь с покрытием 24К золото" },
+            { "name": "Тип механизма", "value": "Механический, с пружинным заводом" },
+            { "name": "Спуск", "value": "Анкерный (Graham escapement)" },
+            { "name": "Частота биений", "value": "5400 п/ч" },
+            { "name": "Автономность", "value": "30 дней" },
+            { "name": "Страна производства", "value": "Италия" },
+            { "name": "Дизайн", "value": "Для помещений" }
+        ],
+        "dimensions": {
+            "length": "66 см",
+            "width": "23 см",
+            "height": "66 см"
+        },
+        "weight": "30 кг",
+        "packaging": {
+            "type": "Коробка",
+            "dimensions": "Д 80 Ш 80 В 46 см | Д 31 1/2\" Ш 31 1/2\" В 18\"",
+            "weight": "50 кг | 110 фунтов"
+        },
+        "assemblyRequired": false,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtVGFrdG8tUHJlc3RvLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA1NTU1LTQ1NjMxJnRva2VuPTQwYzIxZmI5NmFmYjE2ZTc.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Takto Timepieces от Teckell ведет вас за руку в мир извечной борьбы человека со временем с коллекцией экстраординарных напольных и настенных часов.</p><p><em>Исключительный баланс формы и функции в высоко ценимом объекте.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGFrdG8tMTcweDUwLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA4NTkwLTE5MDQmdG9rZW49ZjgzNzU1NjUwNzlkYWMwYw.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "takto-timepieces-adagio",
+            "stratego-marquina-black-marble",
+            "stratego-calacatta-white-marble",
+            "cristallino-24k-gold",
+            "biliardo-light-bronze-t-1-1"
+        ]
     },
     {
-        id: "adagio",
-        name: "Adagio",
-        category: "Часы",
-        categorySlug: "timepieces",
-        price: 40000,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Adagio-Black-001-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Adagio-White-001-667x800.png",
-        inStock: true,
-        stockStatus: "Под заказ"
+        "id": "adagio",
+        "name": "Adagio",
+        "nameEn": "Adagio",
+        "category": "Часы",
+        "categorySlug": "timepieces",
+        "price": 40000,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Adagio-Black-001-667x800.png",
+        "hoverImage": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Takto-Adagio-White-001-667x800.png",
+        "inStock": true,
+        "stockStatus": "Под заказ",
+        "isVariable": true,
+        "shortDescription": "Изысканный хранитель времени, который гордо и элегантно демонстрирует свою абсолютную точность и передовые технологии.",
+        "fullDescription": "<ul><li>Стержень маятника диаметром 12 мм, изготовлен из инвара, металлического сплава с очень низким коэффициентом теплового расширения, с компенсационной трубкой для температурных изменений.</li><li>Градуированный ободок на маятнике для регулировки времени. Регулировка может быть еще более точной с помощью небольших грузиков.</li><li>Вал из нержавеющей стали, вращение на 15 шарикоподшипниках. Вильчатая передача с односторонним толкателем. Регулировочный винт вилки с рубиновым наконечником для низкого коэффициента трения.</li><li>Основание и верхушка из черного мрамора Marquina или полированного белого мрамора Covelano.</li><li>Частота биений: 3600/ч.</li><li>Стеклянная конструкция из особо прозрачного стекла толщиной 15 мм (9/16”), с точно выгравированными и отполированными с высоким мастерством метками часов и минут.</li><li>Основание и рама из черного мрамора Marquina. Циферблат получен из цельного блока фрезерованного алюминия с черным анодированным покрытием в стиле гильоше.</li><li>Автономность завода: 30 дней</li><li>Подвесная пружина.</li><li>Анкерный спуск Грэма.</li><li>Элементы с пониженным весом: привод 2,4 кг.</li><li>Предназначено для использования в помещении</li></ul>",
+        "brand": "Takto",
+        "brandLogo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGFrdG8ucG5nJmNhY2hlTWFya2VyPTE3NzA0MDg1ODctNTExOCZ0b2tlbj0yZTE5ZmY3MGMxNmM2NTcx.q.png",
+        "attributes": [
+            { "name": "Бренд", "value": "Takto" },
+            { "name": "Тип", "value": "Напольные часы-маятник" },
+            { "name": "Материал основания и верха", "value": "Мрамор Marquina (черный) / Covelano (белый)" },
+            { "name": "Материал корпуса", "value": "Сталь, многослойное стекло" },
+            { "name": "Материал маятника", "value": "Инвар (сплав)" },
+            { "name": "Материал циферблата", "value": "Анодированный алюминий" },
+            { "name": "Тип механизма", "value": "Механический, с пружинным заводом" },
+            { "name": "Спуск", "value": "Анкерный (Graham escapement)" },
+            { "name": "Частота биений", "value": "3600 п/ч" },
+            { "name": "Автономность", "value": "30 дней" },
+            { "name": "Страна производства", "value": "Италия" },
+            { "name": "Дизайн", "value": "Для помещений" }
+        ],
+        "dimensions": {
+            "length": "76 см",
+            "width": "33 см",
+            "height": "225 см"
+        },
+        "weight": "292 кг",
+        "packaging": {
+            "type": "2 коробки",
+            "dimensions": "Коробка 1: Д 234 Ш 90 В 50 см | Коробка 2: Д 93 Ш 62 В 60 см",
+            "weight": "Коробка 1: 283 кг | Коробка 2: 170 кг"
+        },
+        "assemblyRequired": true,
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGSWNvbmUtR3VpZGUtVGFrdG9NYXJxdWluYS1CbGFjay5wbmcmY2FjaGVNYXJrZXI9MTc3MDQwNTU4MC00MzcxOSZ0b2tlbj05NzJlZjI1MjFmY2NmNTU1.q.png",
+        "sizeGuideImageWidth": 2500,
+        "sizeGuideImageHeight": 834,
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Takto Timepieces от Teckell ведет вас за руку в мир извечной борьбы человека со временем с коллекцией экстраординарных напольных и настенных часов.</p><p><em>Исключительный баланс формы и функции в высоко ценимом объекте.</em></p>",
+            "logo": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjA5JTJGQnJhbmQtVGFrdG8tMTcweDUwLnBuZyZjYWNoZU1hcmtlcj0xNzcwNDA4NTkwLTE5MDQmdG9rZW49ZjgzNzU1NjUwNzlkYWMwYw.q.png"
+        },
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+        "customization": {
+            "enabled": true,
+            "label": "Персонализируйте изделие Teckell:",
+            "placeholder": "Гравировка до 20 символов",
+            "maxLength": 20
+        },
+        "labels": [],
+        "relatedProducts": [
+            "takto-timepieces-presto",
+            "stratego-marquina-black-marble",
+            "stratego-calacatta-white-marble",
+            "90-minuto-matte",
+            "cristallino-outdoor"
+        ]
     },
 
     // ============ ATIPICA (ГУАЛЬТЕРО) ============
     {
-        id: "gualtiero",
-        name: "Gualtiero",
-        category: "Гуальтеро",
-        categorySlug: "atipica",
-        price: 15500,
-        priceSuffix: "без НДС",
-        image: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Gualtiero-Canaletto-wood-001-01-667x800.png",
-        hoverImage: "https://teckell.store/wp-content/uploads/2025/06/Teckell-Gualtiero-Canaletto-wood-004-667x800.png",
-        isReadyToShip: true,
-        inStock: true,
-        stockStatus: "В наличии",
+        "id": "gualtiero",
+        "name": "Gualtiero",
+        "nameEn": "Gualtiero",
+        "category": "Гуальтеро",
+        "categorySlug": "atipica",
+        "price": 15500,
+        "priceSuffix": "без НДС",
+        "image": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Gualtiero-Canaletto-wood-001-01-667x800.png",
+        "hoverImage": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Gualtiero-Canaletto-wood-004-667x800.png",
+        "inStock": true,
+        "stockStatus": "В наличии",
+        "isVariable": true,
+        "shortDescription": "Кабинет редкостей с дартсом. Основание и профиль из черного лакированного ясеня с открытыми порами.",
+        "fullDescription": "<ul><li>Круглое зеркало, открывающееся, как объектив фотоаппарата, с помощью ручки сбоку, открывая потайной шкаф. Отсек открывающейся шторки имеет диаметр 50 см. Отсек полностью функционален и поставляется с внутренней полкой глубиной 15 см.</li><li>Доска для дартса, изготовленная из пробкового каркаса и готовая к игре.</li><li>Изготовлен из шести листов особо прозрачного закаленного стекла толщиной 15 мм и дерева.</li><li>Gualtiero доступен в двух вариантах отделки: с основанием и профилем из дерева Каналетто (Gualtiero Wood) или из черного ясеня с открытыми порами (Gualtiero Black).</li><li>Каждый Gualtiero поставляется с набором дротиков и магнитным лазером для правильного позиционирования игрока.</li><li>Предназначено для использования в помещении</li></ul>",
+        "brand": "Teckell",
+        "brandLogo": "https://teckell.store/wp-content/uploads/2022/09/Teckell-logo-03.svg",
 
-        shortDescription: "Дартс с основанием из дерева Каналетто.",
+        "heroSection": {
+            "subtitle": "TECKELL",
+            "title": "Gualtiero",
+            "quote": "Gualtiero, named for the legend of William Tell, the folk hero and expert marksman, who refused to bow down before the hat of the Austrian noble Gessler.",
+            "buttonAddToCart": "ADD TO CART",
+            "buttonViewMore": "VIEW MORE",
+            "backgroundImage": "https://teckell.store/wp-content/uploads/2025/06/Teckell-Gualtiero-Canaletto-wood-001-01-667x800.png",
+            "dataId": "4116d0e",
+            "dataSettings": {
+                "background_background": "classic"
+            }
+        },
 
-        labels: [
-            { text: "Готов к отправке", type: "custom" }
+        "attributes": [
+            { "name": "Бренд", "value": "Teckell" },
+            { "name": "Тип", "value": "Кабинет редкостей / Дартс" },
+            { "name": "Коллекция", "value": "Atipica" },
+            { "name": "Материал основы и профиля", "value": "Дерево Каналетто или черный ясень (лак, открытые поры)" },
+            { "name": "Материал корпуса", "value": "Закаленное стекло (6 листов по 15 мм)" },
+            { "name": "Материал доски для дартса", "value": "Пробка" },
+            { "name": "Диаметр отсека", "value": "50 см" },
+            { "name": "Страна производства", "value": "Италия" },
+            { "name": "Дизайн", "value": "Для помещений" }
+        ],
+
+        "dimensions": {
+            "length": "88.8 см",
+            "width": "55.4 см (диаметр основания)",
+            "height": "214 см"
+        },
+
+        "weight": "109 кг",
+
+        "packaging": {
+            "type": "2 коробки",
+            "dimensions": "Коробка 1 (голова): Д 100 Ш 100 В 50 см | Коробка 2 (тело): Д 64 Ш 64 В 144 см",
+            "weight": "Коробка 1: 60 кг | Коробка 2: 117 кг"
+        },
+
+        "assemblyRequired": false,
+
+        "sizeGuideImage": "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyNSUyRjA2JTJGR3VpZGVsaW5lcy1HdWFsdGllcm8uanBnJmNhY2hlTWFya2VyPTE3NzAzOTkyODktNTcyMzgmdG9rZW49MDIwYmE2NDQxYzZkMTRhNQ.q.jpg",
+        "sizeGuideImageWidth": 1920,
+        "sizeGuideImageHeight": 1075,
+
+        "brandTab": {
+            "title": "О бренде",
+            "content": "<p>Takto Timepieces от Teckell ведет вас за руку в мир извечной борьбы человека со временем с коллекцией экстраординарных напольных и настенных часов.</p><p><em>Исключительный баланс формы и функции в высоко ценимом объекте.</em></p>",
+            "logo": "https://teckell.store/wp-content/uploads/2022/09/Teckell-logo-03.svg"
+        },
+
+        "shippingTab": {
+            "title": "Доставка и производство",
+            "content": "<h3><strong>Время производства</strong></h3><p>Наши мастера немедленно приступят к работе, сочетая мастерство, искусство и превосходство отобранных материалов, чтобы создать шедевр за 10–12 недель, подписанный Teckell.</p><h4><strong>Сроки доставки</strong></h4><p>Наш отдел логистики позаботится о доставке приобретенных вами произведений искусства прямо к вашему дому.</p>",
+            "images": [
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2/VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLWthcm9saW5hLWdyYWJvd3NrYS00NDk4MTM1LXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDQyLTEwMDI2JnRva2VuPTdhMzEyNDVhZTI0ZTBhNTc.q.jpg",
+                "https://teckell.store/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGdGVja2VsbC5zdG9yZSUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAyMiUyRjExJTJGcGV4ZWxzLW5vcm1hLW1vcnRlbnNvbi00MzkxNDcwLXNjYWxlZC0zNTB4NDUwLmpwZyZjYWNoZU1hcmtlcj0xNzcwNDAyNDM4LTIyNTg0JnRva2VuPTJkYWI0MmE1MWYyMThlZjI.q.jpg"
+            ]
+        },
+
+        "customization": {
+            "enabled": false,
+            "label": "",
+            "placeholder": "",
+            "maxLength": 0
+        },
+
+        "labels": [
+            { "text": "Готов к отправке", "type": "custom" }
+        ],
+
+        "relatedProducts": [
+            "takto-timepieces-adagio",
+            "stratego-marquina-black-marble",
+            "stratego-calacatta-white-marble",
+            "90-minuto-matte",
+            "cristallino-outdoor"
         ]
     },
 

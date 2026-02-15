@@ -1,9 +1,11 @@
 "use client";
 
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, Check, Minus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react"; // ← ВАЖНО: добавьте этот импорт!
+import { useState, useEffect } from "react";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
     id: string;
@@ -14,7 +16,7 @@ interface ProductCardProps {
     priceMax?: number;
     priceSuffix?: string;
     image: string;
-    hoverImage?: string; // ← Добавляем hoverImage в пропсы
+    hoverImage?: string;
     isReadyToShip?: boolean;
     isLimited?: boolean;
 }
@@ -28,10 +30,23 @@ export function ProductCard({
                                 priceMax,
                                 priceSuffix = "без НДС",
                                 image,
-                                hoverImage, // ← Добавляем hoverImage
+                                hoverImage,
                                 isReadyToShip = false,
                                 isLimited = false,
                             }: ProductCardProps) {
+
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const { addToCart, items } = useCart();
+
+    const isFavorite = isInWishlist(id);
+    const [isInCart, setIsInCart] = useState(false);
+    const [showAddedAnimation, setShowAddedAnimation] = useState(false);
+
+    // Проверяем, есть ли товар в корзине
+    useEffect(() => {
+        const cartItem = items.find(item => item.product_id === id);
+        setIsInCart(!!cartItem);
+    }, [items, id]);
 
     // Форматирование цены с разделителями тысяч
     const formatPrice = (price: number): string => {
@@ -39,7 +54,34 @@ export function ProductCard({
     };
 
     // Состояние для hover-изображения
-    const [isHovered, setIsHovered] = useState(false); // ← Теперь работает!
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Обработчик добавления в избранное
+    const handleWishlistClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleWishlist(id);
+    };
+
+    // Обработчик добавления в корзину
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isInCart) {
+            addToCart({
+                product_id: id,
+                name,
+                price,
+                image,
+                quantity: 1
+            });
+
+            // Показываем анимацию добавления
+            setShowAddedAnimation(true);
+            setTimeout(() => setShowAddedAnimation(false), 1000);
+        }
+    };
 
     return (
         <div
@@ -49,7 +91,7 @@ export function ProductCard({
         >
             {/* ССЫЛКА НА СТРАНИЦУ ТОВАРА */}
             <Link href={`/product/${id}`} className="block">
-                <div className="product-card-image relative overflow-hidden bg-gray-50">
+                <div className="product-card-image relative overflow-hidden bg-gray-50 aspect-square">
                     {/* Лейблы */}
                     <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
                         {isReadyToShip && (
@@ -66,37 +108,55 @@ export function ProductCard({
 
                     {/* Кнопка "В избранное" */}
                     <button
-                        className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white rounded-full p-2 shadow-md hover:bg-[#aea062] group/btn"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log(`Добавлено в избранное: ${id}`);
-                        }}
-                        aria-label="Добавить в избранное"
+                        className={`absolute top-3 right-3 z-20 transition-all duration-300 bg-white rounded-full p-2 shadow-md hover:bg-[#aea062] group/btn ${
+                            isFavorite ? 'opacity-100 bg-[#aea062]' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                        onClick={handleWishlistClick}
+                        aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
                     >
-                        <Heart size={16} className="text-[#6e6b67] group-hover/btn:text-white transition-colors" />
+                        <Heart
+                            size={16}
+                            className={`transition-colors ${
+                                isFavorite
+                                    ? 'text-white fill-[#aea062]'
+                                    : 'text-[#6e6b67] group-hover/btn:text-white'
+                            }`}
+                        />
                     </button>
 
-                    {/* Изображение с эффектом hover - меняется при наведении */}
-                    <Image
-                        src={isHovered && hoverImage ? hoverImage : image}
-                        alt={name}
-                        fill
-                        className="object-contain p-4 md:p-6 transition-transform duration-700 group-hover:scale-110"
-                        sizes="(max-width: 768px) 280px, 320px"
-                    />
+                    {/* Изображение с эффектом hover */}
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={isHovered && hoverImage ? hoverImage : image}
+                            alt={name}
+                            fill
+                            className="object-contain p-4 md:p-6 transition-transform duration-700 group-hover:scale-110"
+                            sizes="(max-width: 768px) 280px, 320px"
+                        />
+                    </div>
 
-                    {/* Кнопка "Быстрый просмотр" - появляется снизу при наведении */}
+                    {/* Кнопка "В корзину" - появляется снизу при наведении */}
                     <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <button
-                            className="w-full bg-[#3c3937] text-white text-[11px] uppercase tracking-[2px] py-3 hover:bg-[#aea062] transition-colors"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                console.log(`Быстрый просмотр: ${id}`);
-                            }}
+                            className={`w-full text-white text-[11px] uppercase tracking-[2px] py-3 transition-colors flex items-center justify-center gap-2 ${
+                                isInCart
+                                    ? 'bg-green-600 hover:bg-green-700 cursor-default'
+                                    : 'bg-[#3c3937] hover:bg-[#aea062]'
+                            } ${showAddedAnimation ? 'animate-pulse' : ''}`}
+                            onClick={handleAddToCart}
+                            disabled={isInCart}
                         >
-                            Быстрый просмотр
+                            {isInCart ? (
+                                <>
+                                    <Check size={14} />
+                                    В корзине
+                                </>
+                            ) : (
+                                <>
+                                    <ShoppingCart size={14} />
+                                    В корзину
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -135,14 +195,25 @@ export function ProductCard({
 
                 {/* Кнопка "В корзину" для мобильных */}
                 <button
-                    className="lg:hidden w-full mt-3 bg-[#f5f5f5] text-[#3c3937] text-[10px] uppercase tracking-[2px] py-2.5 hover:bg-[#aea062] hover:text-white transition-colors font-medium"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log(`Добавлено в корзину: ${id}, количество: 1`);
-                    }}
+                    className={`lg:hidden w-full mt-3 text-[10px] uppercase tracking-[2px] py-2.5 transition-colors font-medium flex items-center justify-center gap-2 ${
+                        isInCart
+                            ? 'bg-green-600 text-white cursor-default'
+                            : 'bg-[#f5f5f5] text-[#3c3937] hover:bg-[#aea062] hover:text-white'
+                    }`}
+                    onClick={handleAddToCart}
+                    disabled={isInCart}
                 >
-                    В корзину
+                    {isInCart ? (
+                        <>
+                            <Check size={14} />
+                            В корзине
+                        </>
+                    ) : (
+                        <>
+                            <ShoppingCart size={14} />
+                            В корзину
+                        </>
+                    )}
                 </button>
             </div>
         </div>

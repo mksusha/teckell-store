@@ -4,11 +4,12 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Ruler, Maximize2 } from "lucide-react";
+import { Heart, Ruler, Maximize2, HeartOff } from "lucide-react";
 import { Product, Category, formatPrice, getBrandTab, getShippingTab, getMoreProductsButton } from "@/data/categories";
 import { SizeGuideModal } from "@/components/SizeGuideModal";
 import { CartWidget } from "@/components/CartWidget";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface ProductClientProps {
     product: Product;
@@ -23,9 +24,13 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
     const [activeTab, setActiveTab] = useState("description");
     const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
     const [isCartWidgetOpen, setIsCartWidgetOpen] = useState(false);
+    const [isWishlistAnimating, setIsWishlistAnimating] = useState(false);
 
-    // Хук корзины
-    const { items, addToCart, removeFromCart, updateQuantity } = useCart();
+    // Хуки корзины и избранного
+    const { items, addToCart } = useCart();
+    const { isInWishlist, toggleWishlist } = useWishlist();
+
+    const isInWishlistFlag = isInWishlist(product.id);
 
     // Получаем стандартные табы с возможностью переопределения
     const brandTab = getBrandTab(product);
@@ -70,10 +75,17 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
         console.log(`Добавлено в корзину: ${product.id}, количество: ${quantity}, гравировка: ${customization || 'нет'}`);
     };
 
-    // Обработчик добавления в избранное
-    const handleAddToWishlist = () => {
-        console.log(`Добавлено в избранное: ${product.id}`);
-        // Здесь будет API вызов
+    // Обработчик добавления/удаления из избранного
+    const handleToggleWishlist = () => {
+        setIsWishlistAnimating(true);
+        toggleWishlist(product.id);
+
+        // Анимация сердечка
+        setTimeout(() => {
+            setIsWishlistAnimating(false);
+        }, 300);
+
+        console.log(`Избранное: ${product.id} - ${!isInWishlistFlag ? 'добавлено' : 'удалено'}`);
     };
 
     return (
@@ -147,6 +159,15 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                                                 Готов к отправке
                                             </span>
                                         )}
+                                        {product.labels?.map((label, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="bg-black/70 text-white text-[10px] uppercase tracking-wider px-3 py-1.5"
+                                                style={label.color ? { backgroundColor: label.color } : {}}
+                                            >
+                                                {label.text}
+                                            </span>
+                                        ))}
                                     </div>
 
                                     {/* Кнопка увеличения */}
@@ -294,11 +315,22 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
                             {/* Кнопки "В избранное" и "Таблица размеров" */}
                             <div className="flex justify-center gap-6 mb-6">
                                 <button
-                                    onClick={handleAddToWishlist}
-                                    className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#aea062] transition-colors group"
+                                    onClick={handleToggleWishlist}
+                                    className={`inline-flex items-center gap-2 text-sm transition-colors group ${
+                                        isInWishlistFlag
+                                            ? "text-[#aea062]"
+                                            : "text-gray-700 hover:text-[#aea062]"
+                                    }`}
                                 >
-                                    <Heart size={18} className="group-hover:scale-110 transition-transform" />
-                                    <span>В избранное</span>
+                                    <Heart
+                                        size={18}
+                                        className={`transition-all duration-300 ${
+                                            isWishlistAnimating ? "scale-150" : "scale-100"
+                                        } ${isInWishlistFlag ? "fill-[#aea062]" : ""}`}
+                                    />
+                                    <span>
+                                        {isInWishlistFlag ? "В избранном" : "В избранное"}
+                                    </span>
                                 </button>
                                 <button
                                     onClick={() => setIsSizeGuideOpen(true)}
@@ -550,17 +582,6 @@ export function ProductClient({ product, category, relatedProducts }: ProductCli
             </div>
 
             {/* Модальное окно с таблицей размеров */}
-            <pre style={{display: 'none'}}>
-    {JSON.stringify({
-        hasDimensions: !!product.dimensions,
-        hasWeight: !!product.weight,
-        hasPackaging: !!product.packaging,
-        hasAssemblyRequired: !!product.assemblyRequired,
-        dimensionsValue: product.dimensions,
-        weightValue: product.weight
-    }, null, 2)}
-</pre>
-
             <SizeGuideModal
                 isOpen={isSizeGuideOpen}
                 onClose={() => setIsSizeGuideOpen(false)}

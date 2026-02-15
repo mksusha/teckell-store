@@ -1,26 +1,67 @@
+// components/Header.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ShoppingCart, Heart, Search, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
 import { CartWidget } from "@/components/CartWidget";
+import { SearchModal } from "@/components/SearchModal";
 import { categories, getProductsByCategory } from "@/data/categories";
+import { useWishlist } from "@/hooks/useWishlist";
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeMobileCategory, setActiveMobileCategory] = useState<string | null>(null);
     const pathname = usePathname();
-    const { items } = useCart();
 
-    const itemCount =
-        items?.reduce((total, item) => total + item.quantity, 0) || 0;
+    // Получаем данные из хуков
+    const { count: initialCartCount } = useCart();
+    const { count: initialWishlistCount } = useWishlist();
+
+    // Создаем локальные состояния для счетчиков
+    const [cartCount, setCartCount] = useState(initialCartCount);
+    const [wishlistCount, setWishlistCount] = useState(initialWishlistCount);
+
+    // Обновляем локальные состояния при изменении данных в хуках
+    useEffect(() => {
+        setCartCount(initialCartCount);
+    }, [initialCartCount]);
+
+    useEffect(() => {
+        setWishlistCount(initialWishlistCount);
+    }, [initialWishlistCount]);
+
+    // Подписываемся на события
+    useEffect(() => {
+        const handleCartUpdate = (e: CustomEvent) => {
+            console.log('Cart updated:', e.detail);
+            setCartCount(e.detail.count);
+        };
+
+        const handleWishlistUpdate = (e: CustomEvent) => {
+            console.log('Wishlist updated:', e.detail);
+            setWishlistCount(e.detail.count);
+        };
+
+        window.addEventListener('cart-updated', handleCartUpdate as EventListener);
+        window.addEventListener('wishlist-updated', handleWishlistUpdate as EventListener);
+
+        return () => {
+            window.removeEventListener('cart-updated', handleCartUpdate as EventListener);
+            window.removeEventListener('wishlist-updated', handleWishlistUpdate as EventListener);
+        };
+    }, []);
 
     const isProductPage = pathname.startsWith("/product/");
+    const isContactPage = pathname === "/contact-us";
+    const isSearchPage = pathname === "/search";
+    const isWishlistPage = pathname === "/wishlist";
 
     useEffect(() => {
         const onScroll = () => {
@@ -33,7 +74,7 @@ export function Header() {
 
     // Блокировка скролла body при открытом меню или виджете
     useEffect(() => {
-        if (isMenuOpen || isCartOpen) {
+        if (isMenuOpen || isCartOpen || isSearchOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -42,12 +83,46 @@ export function Header() {
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isMenuOpen, isCartOpen]);
+    }, [isMenuOpen, isCartOpen, isSearchOpen]);
 
-    const isBlack = scrolled;
+    // Логика для цвета фона header
+    const getHeaderBgClass = () => {
+        if (isContactPage) {
+            return scrolled ? "bg-white shadow-md" : "bg-transparent";
+        }
+        if (isProductPage) {
+            return scrolled ? "bg-black shadow-md" : "bg-transparent";
+        }
+        if (isSearchPage || isWishlistPage) {
+            return scrolled ? "bg-white shadow-md" : "bg-transparent";
+        }
+        return scrolled ? "bg-black shadow-md" : "bg-transparent";
+    };
 
-    // Высота верхней панели в зависимости от скролла
-    const topBarHeight = scrolled ? 0 : 40; // 40px - высота верхней панели
+    // Логика для цвета текста и иконок
+    const getTextColorClass = () => {
+        if (isContactPage || isSearchPage || isWishlistPage) {
+            return "text-black hover:text-[#aea062]";
+        }
+        if (scrolled) {
+            return "text-white hover:text-[#aea062]";
+        }
+        if (isProductPage) {
+            return "text-black hover:text-[#aea062]";
+        }
+        return "text-white hover:text-[#aea062]";
+    };
+
+    // Логика для логотипа
+    const getLogoSrc = () => {
+        if (isContactPage || isSearchPage || isWishlistPage) {
+            return "/logo2.svg";
+        }
+        if (isProductPage) {
+            return scrolled ? "/logo.svg" : "/logo2.svg";
+        }
+        return scrolled ? "/logo1.svg" : "/logo.svg";
+    };
 
     // Основные категории для отображения
     const mainCategories = [
@@ -77,12 +152,12 @@ export function Header() {
     return (
         <>
             <header className="fixed top-0 left-0 right-0 z-50">
-                {/* Верхняя панель - динамическая высота */}
+                {/* Верхняя панель */}
                 <div
                     className={`hidden md:block bg-[rgb(207,181,59)]/50 text-white text-xs transition-all duration-300 overflow-hidden ${
                         scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
                     }`}
-                    style={{ height: scrolled ? 0 : '40px' }}
+                    style={{ height: scrolled ? 0 : '30px' }}
                 >
                     <div className="container mx-auto px-6 py-2 flex items-center justify-between">
                         <Link href="https://www.teckell.com" className="hover:text-white/80 transition-colors">
@@ -90,16 +165,14 @@ export function Header() {
                         </Link>
                         <div className="flex items-center gap-6">
                             <Link href="#" className="hover:text-white/80 transition-colors">Подписка на новости</Link>
-                            <Link href="#" className="hover:text-white/80 transition-colors">Связаться с нами</Link>
+                            <Link href="/contact-us" className="hover:text-white/80 transition-colors">Связаться с нами</Link>
                         </div>
                     </div>
                 </div>
 
                 {/* Основной header */}
                 <div
-                    className={`transition-colors duration-300 ${
-                        isBlack ? "bg-black" : isProductPage ? "bg-white" : "bg-transparent"
-                    }`}
+                    className={`transition-all duration-300 ${getHeaderBgClass()}`}
                 >
                     <div className="container mx-auto px-4 md:px-6">
                         <div className="flex items-center justify-between h-16 md:h-16">
@@ -109,13 +182,7 @@ export function Header() {
                                     setIsMenuOpen(!isMenuOpen);
                                     setActiveMobileCategory(null);
                                 }}
-                                className={`flex items-center gap-2 transition-colors ${
-                                    isBlack
-                                        ? "text-white hover:text-[#aea062]"
-                                        : isProductPage
-                                            ? "text-black hover:text-[#aea062]"
-                                            : "text-white hover:text-[#aea062]"
-                                }`}
+                                className={`flex items-center gap-2 transition-colors ${getTextColorClass()}`}
                                 aria-label="Меню"
                             >
                                 {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -131,7 +198,7 @@ export function Header() {
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 <Image
-                                    src={isBlack ? "/logo1.svg" : isProductPage ? "/logo.svg" : "/logo1.svg"}
+                                    src={getLogoSrc()}
                                     alt="Teckell"
                                     width={120}
                                     height={40}
@@ -142,52 +209,43 @@ export function Header() {
 
                             {/* Иконки */}
                             <div className="flex items-center gap-3 md:gap-4">
+                                {/* Кнопка поиска */}
                                 <button
-                                    className={`hidden md:flex transition-colors ${
-                                        isBlack
-                                            ? "text-white hover:text-[#aea062]"
-                                            : isProductPage
-                                                ? "text-black hover:text-[#aea062]"
-                                                : "text-white hover:text-[#aea062]"
-                                    }`}
+                                    onClick={() => setIsSearchOpen(true)}
+                                    className={`hidden md:flex transition-colors ${getTextColorClass()}`}
                                     aria-label="Поиск"
                                 >
                                     <Search size={20} />
                                 </button>
 
                                 <Link
-                                    href="#"
-                                    className={`flex items-center gap-1 transition-colors ${
-                                        isBlack
-                                            ? "text-white hover:text-[#aea062]"
-                                            : isProductPage
-                                                ? "text-black hover:text-[#aea062]"
-                                                : "text-white hover:text-[#aea062]"
-                                    }`}
+                                    href="/wishlist"
+                                    className={`flex items-center gap-1 transition-colors relative ${getTextColorClass()}`}
                                     aria-label="Избранное"
                                 >
-                                    <Heart size={20} />
-                                    <span className="text-xs hidden md:inline">0</span>
+                                    <Heart
+                                        size={20}
+                                        className={wishlistCount > 0 ? "fill-[#aea062] text-[#aea062]" : ""}
+                                    />
+                                    <span className="text-xs hidden md:inline">{wishlistCount}</span>
+                                    {wishlistCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {wishlistCount}
+                                        </span>
+                                    )}
                                 </Link>
 
-                                {/* Кнопка корзины - открывает виджет */}
+                                {/* Кнопка корзины */}
                                 <button
                                     onClick={() => setIsCartOpen(true)}
-                                    className={`flex items-center gap-1 transition-colors relative ${
-                                        isBlack
-                                            ? "text-white hover:text-[#aea062]"
-                                            : isProductPage
-                                                ? "text-black hover:text-[#aea062]"
-                                                : "text-white hover:text-[#aea062]"
-                                    }`}
+                                    className={`flex items-center gap-1 transition-colors relative ${getTextColorClass()}`}
                                     aria-label="Корзина"
                                 >
                                     <ShoppingCart size={20} />
-                                    <span className="text-xs hidden md:inline">{itemCount}</span>
-                                    {/* Бейдж для мобильных */}
-                                    {itemCount > 0 && (
+                                    <span className="text-xs hidden md:inline">{cartCount}</span>
+                                    {cartCount > 0 && (
                                         <span className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                            {itemCount}
+                                            {cartCount}
                                         </span>
                                     )}
                                 </button>
@@ -196,19 +254,19 @@ export function Header() {
                     </div>
                 </div>
 
-                {/* Меню для мобильных и десктопов - с динамическим top */}
+                {/* Меню для мобильных и десктопов */}
                 {isMenuOpen && (
                     <div
-                        className="fixed inset-x-0 bottom-0 bg-white z-40 overflow-y-auto"
+                        className="fixed inset-x-0 bottom-0 bg-white z-40 overflow-y-auto shadow-xl"
                         style={{
-                            top: scrolled ? '64px' : '104px', // 64px (header) или 64px + 40px (header + top bar)
+                            top: scrolled ? '64px' : '104px',
                         }}
                     >
                         <nav className="h-full overflow-y-auto">
                             <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
-                                {/* Десктопная версия (3 колонки) */}
+                                {/* Десктопная версия */}
                                 <div className="hidden md:grid md:grid-cols-3 gap-8">
-                                    {/* Первая колонка - основные категории */}
+                                    {/* Первая колонка */}
                                     <div>
                                         <h3 className="text-lg font-serif mb-4 text-[#3c3937] border-b border-gray-200 pb-2">
                                             КАТЕГОРИИ
@@ -231,7 +289,7 @@ export function Header() {
                                         </ul>
                                     </div>
 
-                                    {/* Вторая колонка - следующие категории */}
+                                    {/* Вторая колонка */}
                                     <div>
                                         <h3 className="text-lg font-serif mb-4 text-[#3c3937] border-b border-gray-200 pb-2 opacity-0">
                                             &nbsp;
@@ -254,7 +312,7 @@ export function Header() {
                                         </ul>
                                     </div>
 
-                                    {/* Третья колонка - аксессуары */}
+                                    {/* Третья колонка */}
                                     <div>
                                         <h3 className="text-lg font-serif mb-4 text-[#3c3937] border-b border-gray-200 pb-2">
                                             АКСЕССУАРЫ
@@ -276,7 +334,6 @@ export function Header() {
                                             ))}
                                         </ul>
 
-                                        {/* Дополнительная ссылка на все категории */}
                                         <div className="mt-6 pt-4 border-t border-gray-200">
                                             <Link
                                                 href="/categories"
@@ -290,9 +347,8 @@ export function Header() {
                                     </div>
                                 </div>
 
-                                {/* Мобильная версия (аккордеон) */}
+                                {/* Мобильная версия */}
                                 <div className="md:hidden space-y-4">
-                                    {/* Кнопка закрытия для мобильных */}
                                     <button
                                         onClick={() => setIsMenuOpen(false)}
                                         className="absolute top-4 right-4 text-gray-500 hover:text-[#aea062] transition-colors"
@@ -301,21 +357,29 @@ export function Header() {
                                         <X size={24} />
                                     </button>
 
-                                    {/* Поиск для мобильных */}
                                     <div className="mb-6">
                                         <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                                             <input
                                                 type="text"
                                                 placeholder="Поиск товаров..."
                                                 className="flex-1 px-4 py-3 text-sm outline-none"
+                                                onClick={() => {
+                                                    setIsMenuOpen(false);
+                                                    setIsSearchOpen(true);
+                                                }}
                                             />
-                                            <button className="px-4 py-3 bg-gray-50 text-gray-600 hover:text-[#aea062] transition-colors">
+                                            <button
+                                                className="px-4 py-3 bg-gray-50 text-gray-600 hover:text-[#aea062] transition-colors"
+                                                onClick={() => {
+                                                    setIsMenuOpen(false);
+                                                    setIsSearchOpen(true);
+                                                }}
+                                            >
                                                 <Search size={18} />
                                             </button>
                                         </div>
                                     </div>
 
-                                    {/* Категории для мобильных */}
                                     {mobileCategories.map((group, idx) => (
                                         <div key={idx} className="mb-6">
                                             <h3 className="text-sm font-semibold text-gray-500 mb-3 px-2">
@@ -342,7 +406,6 @@ export function Header() {
                                         </div>
                                     ))}
 
-                                    {/* Популярные товары для мобильных */}
                                     <div className="mt-8 pt-6 border-t border-gray-200">
                                         <h4 className="text-sm font-semibold text-gray-500 mb-4 px-2">ПОПУЛЯРНЫЕ ТОВАРЫ</h4>
                                         <div className="space-y-3">
@@ -368,7 +431,7 @@ export function Header() {
                                                             {product.name}
                                                         </p>
                                                         <p className="text-xs text-[#aea062] mt-1">
-                                                            {product.price.toLocaleString()} €
+                                                            €{product.price.toLocaleString()}
                                                         </p>
                                                     </div>
                                                 </Link>
@@ -376,15 +439,14 @@ export function Header() {
                                         </div>
                                     </div>
 
-                                    {/* Ссылки на страницы */}
                                     <div className="mt-8 pt-6 border-t border-gray-200">
                                         <div className="grid grid-cols-2 gap-3">
                                             <Link
-                                                href="#"
+                                                href="/wishlist"
                                                 className="text-center px-4 py-3 bg-gray-50 rounded-lg text-sm text-[#3c3937] hover:bg-[#aea062] hover:text-white transition-colors"
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
-                                                Избранное
+                                                Избранное ({wishlistCount})
                                             </Link>
                                             <Link
                                                 href="/cart"
@@ -394,13 +456,13 @@ export function Header() {
                                                     setIsCartOpen(true);
                                                 }}
                                             >
-                                                Корзина
+                                                Корзина ({cartCount})
                                             </Link>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Нижняя панель с популярными товарами (только для десктопа) */}
+                                {/* Нижняя панель для десктопа */}
                                 <div className="hidden md:block mt-8 pt-6 border-t border-gray-200">
                                     <h4 className="text-sm font-semibold text-gray-500 mb-4">ПОПУЛЯРНЫЕ ТОВАРЫ</h4>
                                     <div className="grid grid-cols-4 gap-4">
@@ -432,10 +494,14 @@ export function Header() {
                 )}
             </header>
 
-            {/* Виджет корзины */}
             <CartWidget
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
+            />
+
+            <SearchModal
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
             />
         </>
     );

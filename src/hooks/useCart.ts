@@ -11,6 +11,9 @@ export function useCart() {
     // Вычисляем общую сумму
     const cartTotal = items.reduce((sum, item) => sum + item.total, 0);
 
+    // Вычисляем общее количество товаров (сумма quantity)
+    const itemCount = items.reduce((total, item) => total + (item.quantity || 1), 0);
+
     // Загрузка корзины из localStorage при монтировании
     useEffect(() => {
         const savedCart = localStorage.getItem('cart');
@@ -24,12 +27,16 @@ export function useCart() {
         setIsInitialized(true);
     }, []);
 
-    // Сохранение корзины в localStorage при изменении
+    // Сохранение корзины в localStorage при изменении и dispatch события
     useEffect(() => {
         if (isInitialized) {
             localStorage.setItem('cart', JSON.stringify(items));
+            // Отправляем событие об обновлении корзины
+            window.dispatchEvent(new CustomEvent('cart-updated', {
+                detail: { items, count: items.length, itemCount }
+            }));
         }
-    }, [items, isInitialized]);
+    }, [items, isInitialized, itemCount]);
 
     // Добавление товара в корзину
     const addToCart = (item: Omit<CartItem, 'key' | 'total'> & { quantity: number }) => {
@@ -73,6 +80,7 @@ export function useCart() {
 
     return {
         items,
+        count: itemCount, // Добавляем вычисляемое свойство count
         isOpen,
         cartTotal,
         addToCart,

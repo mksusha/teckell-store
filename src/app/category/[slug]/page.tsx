@@ -11,6 +11,7 @@ import {
     getMaxPriceInCategory
 } from "@/data/categories";
 import {Header} from "@/components/Header";
+import {Footer} from "@/components/Footer";
 
 interface Props {
     params: Promise<{
@@ -112,6 +113,7 @@ export default async function CategoryPage({ params }: Props) {
                     />
                 </div>
             </div>
+            <Footer></Footer>
         </div>
     );
 }
