@@ -27,21 +27,43 @@ export function ContactForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitStatus(null);
 
-        // Имитация отправки формы
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setSubmitStatus('success');
-            // Сброс формы после успешной отправки
-            setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                company: '',
-                message: '',
-                privacyAccepted: false
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    company: formData.company,
+                    message: formData.message
+                }),
             });
-        }, 1500);
+
+            if (response.ok) {
+                setSubmitStatus('success');
+                // Сброс формы после успешной отправки
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    company: '',
+                    message: '',
+                    privacyAccepted: false
+                });
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -154,7 +176,10 @@ export function ContactForm() {
 
             {submitStatus === 'error' && (
                 <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center">
-                    Произошла ошибка. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.
+                    Произошла ошибка. Пожалуйста, попробуйте позже или свяжитесь с нами по email:{' '}
+                    <a href="mailto:tsp.odett@gmail.com" className="text-[#DEC560] hover:underline font-medium">
+                        tsp.odett@gmail.com
+                    </a>
                 </div>
             )}
         </form>

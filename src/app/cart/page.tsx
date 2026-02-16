@@ -4,13 +4,84 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
-import { Trash2, ArrowLeft, ArrowRight } from "lucide-react";
-import {Header} from "@/components/Header";
-import {Footer} from "@/components/Footer";
+import { Trash2, ArrowLeft, ArrowRight, X } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function CartPage() {
     const { items, removeFromCart, updateQuantity, cartTotal } = useCart();
     const [couponCode, setCouponCode] = useState("");
+    const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+    // Данные формы
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        privacyAccepted: false
+    });
+
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSubmitOrder = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus(null);
+
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    customer: formData,
+                    order: {
+                        items: items.map(item => ({
+                            name: item.name,
+                            quantity: item.quantity,
+                            price: item.price,
+                            total: item.total
+                        })),
+                        subtotal: subtotal,
+                        vat: vat,
+                        total: total
+                    }
+                }),
+            });
+
+            if (response.ok) {
+                setSubmitStatus('success');
+                // Показываем модальное окно
+                setShowSuccessModal(true);
+                // Сброс формы
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    privacyAccepted: false
+                });
+                setShowCheckoutForm(false);
+                // Здесь можно добавить очистку корзины если нужно
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            console.error('Error sending order:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const formatPrice = (price: number | undefined | null) => {
         if (!price || isNaN(price)) return "0";
@@ -26,8 +97,75 @@ export default function CartPage() {
         <div>
             <Header />
 
+            {/* Модальное окно успешной отправки */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                    {/* Затемнение фона */}
+                    <div
+                        className="absolute inset-0 bg-black/50"
+                        onClick={() => setShowSuccessModal(false)}
+                    />
+
+                    {/* Модальное окно */}
+                    <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-fadeIn">
+                        <button
+                            onClick={() => setShowSuccessModal(false)}
+                            className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <div className="text-center">
+                            {/* Иконка успеха */}
+                            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                                <svg
+                                    className="h-8 w-8 text-green-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                            </div>
+
+                            <h3 className="text-2xl font-serif text-gray-900 mb-2">
+                                Заявка отправлена!
+                            </h3>
+
+                            <p className="text-gray-600 mb-6">
+                                Спасибо за ваш заказ. Наш менеджер свяжется с вами в ближайшее время для подтверждения деталей.
+                            </p>
+
+                            <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                                <p className="text-sm text-gray-600 mb-1">
+                                    <span className="font-medium">Детали заказа:</span>
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Сумма заказа: <span className="font-semibold text-[#c9b037]">{formatPrice(total)} €</span>
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Способ связи: мы позвоним вам в ближайшее время
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() => setShowSuccessModal(false)}
+                                className="w-full bg-[#c9b037] text-white py-3 px-4 rounded-lg hover:bg-[#b89f30] transition-colors"
+                            >
+                                Продолжить покупки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* HERO SECTION */}
-            <div className="relative w-full  h-[200px] md:h-[310px] overflow-hidden">
+            <div className="relative w-full h-[200px] md:h-[310px] overflow-hidden">
                 <div className="absolute inset-0">
                     <Image
                         src="/images/cart.webp"
@@ -290,12 +428,106 @@ export default function CartPage() {
                                 </tbody>
                             </table>
 
-                            <Link
-                                href="/checkout"
-                                className="block text-center mt-6 bg-[#3c3937] text-white py-4 px-4 uppercase tracking-wider text-white bg-[rgb(207,181,59)] hover:bg-[rgb(193,168,56)] text-sm sm:text-base"
-                            >
-                                Оформить заказ
-                            </Link>
+                            {!showCheckoutForm ? (
+                                <button
+                                    onClick={() => setShowCheckoutForm(true)}
+                                    className="block w-full text-center mt-6 bg-[#3c3937] text-white py-4 px-4 uppercase tracking-wider bg-[rgb(207,181,59)] hover:bg-[rgb(193,168,56)] text-sm sm:text-base"
+                                >
+                                    Оформить заказ
+                                </button>
+                            ) : (
+                                <form onSubmit={handleSubmitOrder} className="mt-6 space-y-4">
+                                    <h3 className="text-lg font-serif mb-4">Контактные данные</h3>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Ваше имя *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleFormChange}
+                                            required
+                                            className="w-full px-4 py-2 border border-gray-300 focus:border-[#c9b037] outline-none transition-colors"
+                                            placeholder="Иван Иванов"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Ваш Email *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleFormChange}
+                                            required
+                                            className="w-full px-4 py-2 border border-gray-300 focus:border-[#c9b037] outline-none transition-colors"
+                                            placeholder="ivan@example.com"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Номер телефона *
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleFormChange}
+                                            required
+                                            className="w-full px-4 py-2 border border-gray-300 focus:border-[#c9b037] outline-none transition-colors"
+                                            placeholder="+7 (999) 123-45-67"
+                                        />
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="flex items-start gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                name="privacyAccepted"
+                                                checked={formData.privacyAccepted}
+                                                onChange={handleFormChange}
+                                                required
+                                                className="mt-1"
+                                            />
+                                            <span className="text-sm text-gray-600">
+                                                Принимаю условия{' '}
+                                                <a href="/privacy-policy" className="text-[#c9b037] hover:underline">
+                                                    Политики конфиденциальности
+                                                </a>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting || !formData.privacyAccepted}
+                                            className="flex-1 bg-[#c9b037] text-white py-3 px-4 uppercase tracking-wider hover:bg-[#b89f30] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isSubmitting ? 'ОТПРАВКА...' : 'ПОДТВЕРДИТЬ ЗАКАЗ'}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCheckoutForm(false)}
+                                            className="px-4 py-3 border border-gray-300 hover:bg-gray-50 transition-colors"
+                                        >
+                                            Отмена
+                                        </button>
+                                    </div>
+
+                                    {submitStatus === 'error' && (
+                                        <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 text-center">
+                                            Произошла ошибка. Пожалуйста, попробуйте позже или свяжитесь с нами по email.
+                                        </div>
+                                    )}
+                                </form>
+                            )}
                         </div>
                     </div>
                 ) : (
@@ -312,6 +544,23 @@ export default function CartPage() {
                 )}
             </main>
             <Footer />
+
+            {/* Добавляем стили для анимации */}
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-out;
+                }
+            `}</style>
         </div>
     );
 }

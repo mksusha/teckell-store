@@ -62,6 +62,7 @@ export function Header() {
     const isContactPage = pathname === "/contact-us";
     const isSearchPage = pathname === "/search";
     const isWishlistPage = pathname === "/wishlist";
+    const isCartPage = pathname.startsWith("/cart");
 
     useEffect(() => {
         const onScroll = () => {
@@ -121,6 +122,9 @@ export function Header() {
         if (isProductPage) {
             return scrolled ? "/logo.svg" : "/logo2.svg";
         }
+        if (isCartPage) {
+            return scrolled ? "/logo.svg" : "/logo.svg";
+        }
         return scrolled ? "/logo1.svg" : "/logo.svg";
     };
 
@@ -157,15 +161,64 @@ export function Header() {
                     className={`hidden md:block bg-[rgb(207,181,59)]/50 text-white text-xs transition-all duration-300 overflow-hidden ${
                         scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
                     }`}
-                    style={{ height: scrolled ? 0 : '30px' }}
+                    style={{height: scrolled ? 0 : '30px'}}
                 >
                     <div className="container mx-auto px-6 py-2 flex items-center justify-between">
                         <Link href="https://www.teckell.com" className="hover:text-white/80 transition-colors">
                             ПЕРЕЙТИ НА ОФИЦИАЛЬНЫЙ САЙТ TECKELL
                         </Link>
+
                         <div className="flex items-center gap-6">
-                            <Link href="#" className="hover:text-white/80 transition-colors">Подписка на новости</Link>
-                            <Link href="/contact-us" className="hover:text-white/80 transition-colors">Связаться с нами</Link>
+                            {/* Контактные телефоны */}
+                            <div className="flex items-center gap-4">
+                                <a href="tel:+74995530227"
+                                   className="hover:text-white/80 transition-colors flex items-center gap-1">
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a1.999 1.999 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8 10a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                                    </svg>
+                                    +7 (499) 55-30-227
+                                </a>
+
+
+                            </div>
+
+                            {/* WhatsApp и Telegram */}
+                            <div className="flex items-center gap-2">
+                                <a href="https://wa.me/79932609855" target="_blank" rel="noopener noreferrer"
+                                   className="hover:text-white/80 transition-colors" title="WhatsApp">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                        <path
+                                            d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.123 1.522 5.854L.052 23.39l5.688-1.466A11.937 11.937 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.85 0-3.638-.5-5.172-1.44l-.37-.22-3.478.9.924-3.303-.24-.38A9.934 9.934 0 012 12c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10z"/>
+                                    </svg>
+                                </a>
+
+                                <a href="https://t.me/79932609855" target="_blank" rel="noopener noreferrer"
+                                   className="hover:text-white/80 transition-colors" title="Telegram">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.479.26-.379 0-.313-.147-.442-.519l-1.072-3.526-3.104-.964c-.67-.208-.683-.67.138-.993l12.093-4.661c.558-.21.924.067.764.991z"/>
+                                    </svg>
+                                </a>
+                            </div>
+
+                            {/* Email */}
+                            <a href="mailto:info@unoquadro.ru"
+                               className="hover:text-white/80 transition-colors flex items-center gap-1">
+                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                info@unoquadro.ru
+                            </a>
+
+                            <span className="text-white/50">|</span>
+
+                            <Link href="/contact-us" className="hover:text-white/80 transition-colors">
+                                Связаться с нами
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -185,7 +238,7 @@ export function Header() {
                                 className={`flex items-center gap-2 transition-colors ${getTextColorClass()}`}
                                 aria-label="Меню"
                             >
-                                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                                {isMenuOpen ? <X size={20}/> : <Menu size={20}/>}
                                 <span className="text-xs font-semibold tracking-wider hidden md:inline">
                                     МЕНЮ
                                 </span>
@@ -215,7 +268,7 @@ export function Header() {
                                     className={`hidden md:flex transition-colors ${getTextColorClass()}`}
                                     aria-label="Поиск"
                                 >
-                                    <Search size={20} />
+                                    <Search size={20}/>
                                 </button>
 
                                 <Link
@@ -229,7 +282,8 @@ export function Header() {
                                     />
                                     <span className="text-xs hidden md:inline">{wishlistCount}</span>
                                     {wishlistCount > 0 && (
-                                        <span className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        <span
+                                            className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                             {wishlistCount}
                                         </span>
                                     )}
@@ -241,10 +295,11 @@ export function Header() {
                                     className={`flex items-center gap-1 transition-colors relative ${getTextColorClass()}`}
                                     aria-label="Корзина"
                                 >
-                                    <ShoppingCart size={20} />
+                                    <ShoppingCart size={20}/>
                                     <span className="text-xs hidden md:inline">{cartCount}</span>
                                     {cartCount > 0 && (
-                                        <span className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        <span
+                                            className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                             {cartCount}
                                         </span>
                                     )}
@@ -280,7 +335,8 @@ export function Header() {
                                                         onClick={() => setIsMenuOpen(false)}
                                                     >
                                                         <span>{category.name}</span>
-                                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
+                                                        <span
+                                                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
                                                             {category.count}
                                                         </span>
                                                     </Link>
@@ -303,7 +359,8 @@ export function Header() {
                                                         onClick={() => setIsMenuOpen(false)}
                                                     >
                                                         <span>{category.name}</span>
-                                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
+                                                        <span
+                                                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
                                                             {category.count}
                                                         </span>
                                                     </Link>
@@ -326,7 +383,8 @@ export function Header() {
                                                         onClick={() => setIsMenuOpen(false)}
                                                     >
                                                         <span>{category.name}</span>
-                                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
+                                                        <span
+                                                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full group-hover:bg-[#aea062] group-hover:text-white transition-colors">
                                                             {category.count}
                                                         </span>
                                                     </Link>
@@ -341,7 +399,7 @@ export function Header() {
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
                                                 Все категории
-                                                <ChevronRight size={16} />
+                                                <ChevronRight size={16}/>
                                             </Link>
                                         </div>
                                     </div>
@@ -354,11 +412,12 @@ export function Header() {
                                         className="absolute top-4 right-4 text-gray-500 hover:text-[#aea062] transition-colors"
                                         aria-label="Закрыть меню"
                                     >
-                                        <X size={24} />
+                                        <X size={24}/>
                                     </button>
 
                                     <div className="mb-6">
-                                        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                                        <div
+                                            className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                                             <input
                                                 type="text"
                                                 placeholder="Поиск товаров..."
@@ -375,7 +434,7 @@ export function Header() {
                                                     setIsSearchOpen(true);
                                                 }}
                                             >
-                                                <Search size={18} />
+                                                <Search size={18}/>
                                             </button>
                                         </div>
                                     </div>
@@ -395,10 +454,11 @@ export function Header() {
                                                     >
                                                         <span className="text-sm font-medium">{category.name}</span>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-xs bg-white text-gray-600 px-2 py-1 rounded-full">
+                                                            <span
+                                                                className="text-xs bg-white text-gray-600 px-2 py-1 rounded-full">
                                                                 {category.count}
                                                             </span>
-                                                            <ChevronRight size={16} className="text-gray-400" />
+                                                            <ChevronRight size={16} className="text-gray-400"/>
                                                         </div>
                                                     </Link>
                                                 ))}
@@ -407,7 +467,8 @@ export function Header() {
                                     ))}
 
                                     <div className="mt-8 pt-6 border-t border-gray-200">
-                                        <h4 className="text-sm font-semibold text-gray-500 mb-4 px-2">ПОПУЛЯРНЫЕ ТОВАРЫ</h4>
+                                        <h4 className="text-sm font-semibold text-gray-500 mb-4 px-2">ПОПУЛЯРНЫЕ
+                                            ТОВАРЫ</h4>
                                         <div className="space-y-3">
                                             {getProductsByCategory("foosball-tables").slice(0, 4).map((product) => (
                                                 <Link
@@ -416,7 +477,8 @@ export function Header() {
                                                     className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors"
                                                     onClick={() => setIsMenuOpen(false)}
                                                 >
-                                                    <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                                    <div
+                                                        className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                                                         {product.image && (
                                                             <Image
                                                                 src={product.image}
@@ -473,7 +535,8 @@ export function Header() {
                                                 className="flex items-center gap-3 text-sm text-[#3c3937] hover:text-[#aea062] transition-colors group"
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
-                                                <div className="relative w-12 h-12 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 group-hover:bg-gray-100 transition-colors">
+                                                <div
+                                                    className="relative w-12 h-12 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 group-hover:bg-gray-100 transition-colors">
                                                     {product.image && (
                                                         <Image
                                                             src={product.image}

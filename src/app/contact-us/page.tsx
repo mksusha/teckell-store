@@ -10,22 +10,54 @@ export default function ContactPage() {
             <div className="min-h-screen mt-24 bg-white">
                 {/* Карта на всю ширину */}
                 <div className="w-full h-[450px] relative">
-                    {/* Сама карта */}
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2792.5111791554015!2d8.793325315562065!3d45.57422763546049!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478687f71c1f3cfb%3A0x26191adba8861c2e!2sVia%20Marmolada%2C%2020%2C%2021013%20Gallarate%20VA%2C%20Italy!5e0!3m2!1sen!2sru!4v1699999999999!5m2!1sen!2sru"
-                        title="Teckell Office"
-                        className="w-full h-full"
-                        style={{border: 0, filter: 'grayscale(10%) contrast(1.1)'}}
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                    />
+                    {/* Яндекс Карта - ваш код */}
+                    <div style={{ position: 'relative', overflow: 'hidden', width: '100%', height: '100%' }}>
+                        {/* Ссылки для Яндекса (скрытые, но необходимые для работы карты) */}
+                        <a
+                            href="https://yandex.ru/maps/213/moscow/?utm_medium=mapframe&utm_source=maps"
+                            style={{ color: '#eee', fontSize: '12px', position: 'absolute', top: '0px', opacity: 0, pointerEvents: 'none' }}
+                        >
+                            Москва
+                        </a>
+                        <a
+                            href="https://yandex.ru/maps/213/moscow/house/nizhnyaya_syromyatnicheskaya_ulitsa_10s5/Z04YcABgSkICQFtvfXt0c3hmZA==/?from=mapframe&indoorLevel=1&ll=37.670375%2C55.752450&source=mapframe&um=constructor%3Ae6e3e8a5a6d5e6b9b0c6c4d4e8f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8&utm_medium=mapframe&utm_source=maps&z=16.9"
+                            style={{ color: '#eee', fontSize: '12px', position: 'absolute', top: '14px', opacity: 0, pointerEvents: 'none' }}
+                        >
+                            Яндекс Карты — транспорт, навигация, поиск мест
+                        </a>
+
+                        {/* Основной iframe карты */}
+                        <iframe
+                            src="https://yandex.ru/map-widget/v1/?from=mapframe&indoorLevel=1&ll=37.670375%2C55.752450&mode=search&ol=geo&ouri=ymapsbm1%3A%2F%2Fgeo%3Fdata%3DCgg1NjcxMzQ2MRJZ0KDQvtGB0YHQuNGPLCDQnNC-0YHQutCy0LAsINCd0LjQttC90Y_RjyDQodGL0YDQvtC80Y_RgtC90LjRh9C10YHQutCw0Y8g0YPQu9C40YbQsCwgMTDRgTUiCg14rhZCFYICX0I%2C&source=mapframe&um=constructor%3Ae6e3e8a5a6d5e6b9b0c6c4d4e8f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8&utm_source=mapframe&z=16.9"
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allowFullScreen={true}
+                            style={{ position: 'relative', border: 0 }}
+                            title="Офис в Москве"
+                        />
+                    </div>
 
                     {/* Затемняющий оверлей */}
                     <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
                 </div>
 
-                {/* Контактная форма с правильными отступами */}
+                {/* Контактная информация под картой */}
+                <div className="container mx-auto px-4 py-8 max-w-4xl">
+                    <div className="bg-gray-50 p-6 rounded-lg mb-8">
+                        <h2 className="text-xl font-serif text-gray-800 mb-4">Наш адрес:</h2>
+                        <p className="text-gray-600 mb-2">
+                            Россия, г. Москва, Нижняя Сыромятническая ул., д.10 к.5
+                        </p>
+                        <p className="text-gray-600">
+                            Email для заказов и коммуникации:{' '}
+                            <a href="mailto:tsp.odett@gmail.com" className="text-[#DEC560] hover:underline">
+                                tsp.odett@gmail.com
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                {/* Контактная форма */}
                 <div className="container mx-auto px-4 py-16 max-w-4xl">
                     {/* Заголовок */}
                     <div className="text-center mb-12">
@@ -38,9 +70,7 @@ export default function ContactPage() {
                     </div>
 
                     {/* Форма */}
-                    <ContactForm/>
-
-
+                    <ContactForm />
                 </div>
             </div>
             <Footer/>
