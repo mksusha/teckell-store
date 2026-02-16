@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/hooks/useCart';
@@ -13,6 +13,12 @@ interface CartWidgetProps {
 
 export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
     const { items, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const [localItems, setLocalItems] = useState(items);
+
+    // Синхронизируем локальные элементы с корзиной при каждом изменении
+    useEffect(() => {
+        setLocalItems(items);
+    }, [items]);
 
     // Форматирование цены
     const formatPrice = (price: number | undefined | null) => {
@@ -20,11 +26,15 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
         return price.toLocaleString('de-DE');
     };
 
-    // Проверяем, что у каждого элемента есть уникальный ключ
-    const itemsWithValidKeys = items.map((item, index) => ({
-        ...item,
-        safeKey: item.key || `item-${item.product_id}-${index}-${Date.now()}`
-    }));
+    const handleUpdateQuantity = (key: string, newQuantity: number) => {
+        if (newQuantity >= 1) {
+            updateQuantity(key, newQuantity);
+        }
+    };
+
+    const handleRemoveItem = (key: string) => {
+        removeFromCart(key);
+    };
 
     if (!isOpen) return null;
 
@@ -45,26 +55,26 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
             >
                 {/* Шапка корзины */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                    <span className="text-lg font-medium">Корзина</span>
+                    <span className="text-lg font-medium">Корзина ({localItems.length})</span>
                     <button
                         onClick={onClose}
-                        className="text-gray-600 hover:text-[#aea062] transition-colors"
+                        className="text-gray-600 hover:text-[#c9b037] transition-colors"
                         aria-label="Закрыть"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
-                {/* Содержимое корзины с прокруткой (без видимого скролла) */}
+                {/* Содержимое корзины с прокруткой */}
                 <div className="flex-1 overflow-y-auto scrollbar-hide p-6">
-                    {itemsWithValidKeys.length > 0 ? (
+                    {localItems.length > 0 ? (
                         <ul className="space-y-6">
-                            {itemsWithValidKeys.map((item) => (
-                                <li key={item.safeKey} className="relative group border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                            {localItems.map((item) => (
+                                <li key={item.key} className="relative group border-b border-gray-100 pb-6 last:border-0 last:pb-0">
                                     <div className="flex gap-4">
                                         {/* Кнопка удаления */}
                                         <button
-                                            onClick={() => removeFromCart(item.key)}
+                                            onClick={() => handleRemoveItem(item.key)}
                                             className="absolute -top-2 -right-2 w-7 h-7 bg-white rounded-full shadow-md flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors z-10 opacity-0 group-hover:opacity-100"
                                             aria-label={`Удалить ${item.name} из корзины`}
                                         >
@@ -79,7 +89,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                         >
                                             <div className="relative w-full h-full">
                                                 <Image
-                                                    src={item.image}
+                                                    src={item.image || '/images/placeholder.jpg'}
                                                     alt={item.name}
                                                     fill
                                                     className="object-contain p-2"
@@ -91,7 +101,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                         <div className="flex-1 min-w-0">
                                             <Link
                                                 href={`/product/${item.product_id}`}
-                                                className="block text-sm font-medium text-gray-800 hover:text-[#aea062] transition-colors mb-2"
+                                                className="block text-sm font-medium text-gray-800 hover:text-[#c9b037] transition-colors mb-2"
                                                 onClick={onClose}
                                             >
                                                 {item.name}
@@ -113,7 +123,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                             <div className="flex items-center justify-between mt-2">
                                                 <div className="flex items-center border border-gray-300 rounded-md">
                                                     <button
-                                                        onClick={() => updateQuantity(item.key, Math.max(1, item.quantity - 1))}
+                                                        onClick={() => handleUpdateQuantity(item.key, item.quantity - 1)}
                                                         className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors rounded-l-md"
                                                         aria-label="Уменьшить количество"
                                                     >
@@ -123,7 +133,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                                         {item.quantity}
                                                     </span>
                                                     <button
-                                                        onClick={() => updateQuantity(item.key, item.quantity + 1)}
+                                                        onClick={() => handleUpdateQuantity(item.key, item.quantity + 1)}
                                                         className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors rounded-r-md"
                                                         aria-label="Увеличить количество"
                                                     >
@@ -132,7 +142,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                                 </div>
                                                 <div className="text-right">
                                                     <span className="text-sm text-gray-500">Цена:</span>
-                                                    <span className="ml-1 text-sm font-semibold text-[#aea062]">
+                                                    <span className="ml-1 text-sm font-semibold text-[#c9b037]">
                                                         {formatPrice(item.price)} €
                                                     </span>
                                                 </div>
@@ -141,7 +151,7 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                                             {/* Подытог */}
                                             <div className="text-right mt-2 pt-2 border-t border-gray-100">
                                                 <span className="text-xs text-gray-500">Подытог:</span>
-                                                <span className="ml-1 text-sm font-bold text-[#aea062]">
+                                                <span className="ml-1 text-sm font-bold text-[#c9b037]">
                                                     {formatPrice(item.total)} €
                                                 </span>
                                             </div>
@@ -161,12 +171,12 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                 </div>
 
                 {/* Футер корзины (итого и кнопки) */}
-                {itemsWithValidKeys.length > 0 && (
+                {localItems.length > 0 && (
                     <div className="border-t border-gray-200 p-6 bg-gray-50">
                         {/* Итоговая сумма */}
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-base font-medium text-gray-700">Итого:</span>
-                            <span className="text-2xl font-bold text-[#aea062]">
+                            <span className="text-2xl font-bold text-[#c9b037]">
                                 {formatPrice(cartTotal || 0)} €
                             </span>
                         </div>
@@ -176,17 +186,11 @@ export function CartWidget({ isOpen, onClose }: CartWidgetProps) {
                             <Link
                                 href="/cart"
                                 onClick={onClose}
-                                className="w-full text-center bg-[#3c3937] text-white text-sm uppercase tracking-wider py-3 px-4 rounded-md hover:bg-[#aea062] transition-colors duration-300"
+                                className="w-full text-center bg-[#3c3937] text-white text-sm uppercase tracking-wider py-3 px-4 rounded-md hover:bg-[#c9b037] transition-colors duration-300"
                             >
                                 Перейти в корзину
                             </Link>
-                            <Link
-                                href="/checkout"
-                                onClick={onClose}
-                                className="w-full text-center border-2 border-[#aea062] bg-[#aea062] text-white text-sm uppercase tracking-wider py-3 px-4 rounded-md hover:bg-[#8b7a3e] hover:border-[#8b7a3e] transition-colors duration-300"
-                            >
-                                Оформить заказ
-                            </Link>
+
                         </div>
                     </div>
                 )}

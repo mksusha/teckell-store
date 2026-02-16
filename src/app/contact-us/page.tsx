@@ -41,21 +41,7 @@ export default function ContactPage() {
                     <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
                 </div>
 
-                {/* Контактная информация под картой */}
-                <div className="container mx-auto px-4 py-8 max-w-4xl">
-                    <div className="bg-gray-50 p-6 rounded-lg mb-8">
-                        <h2 className="text-xl font-serif text-gray-800 mb-4">Наш адрес:</h2>
-                        <p className="text-gray-600 mb-2">
-                            Россия, г. Москва, Нижняя Сыромятническая ул., д.10 к.5
-                        </p>
-                        <p className="text-gray-600">
-                            Email для заказов и коммуникации:{' '}
-                            <a href="mailto:tsp.odett@gmail.com" className="text-[#DEC560] hover:underline">
-                                tsp.odett@gmail.com
-                            </a>
-                        </p>
-                    </div>
-                </div>
+
 
                 {/* Контактная форма */}
                 <div className="container mx-auto px-4 py-16 max-w-4xl">

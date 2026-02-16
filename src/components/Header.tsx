@@ -125,7 +125,7 @@ export function Header() {
         if (isCartPage) {
             return scrolled ? "/logo.svg" : "/logo.svg";
         }
-        return scrolled ? "/logo1.svg" : "/logo.svg";
+        return scrolled ? "/logo.svg" : "/logo.svg";
     };
 
     // Основные категории для отображения
