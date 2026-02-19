@@ -2222,7 +2222,7 @@ export const allProducts: Product[] = [
         "id": "gualtiero",
         "name": "Gualtiero",
         "nameEn": "Gualtiero",
-        "category": "Гуальтеро",
+        "category": "Дартс",
         "categorySlug": "atipica",
         "price": 15500,
         "priceSuffix": "без НДС",
@@ -2469,7 +2469,7 @@ export const categories: Category[] = [
     {
         id: "atipica",
         slug: "atipica",
-        name: "Гуальтеро",
+        name: "Дартс",
         nameEn: "Atipica",
         description: "Кабинет curiosities с дартсом в основании и профиле из дерева Каналетто. Уникальный предмет для любителей нестандартных решений.",
         heroImage: "/images/7.jpg",

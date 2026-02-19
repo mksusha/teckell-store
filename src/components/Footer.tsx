@@ -152,6 +152,13 @@ export function Footer() {
                             ))}
                         </div>
 
+                        {/* Добавленный блок с заголовком "Группа UNO QUADRO" */}
+                        <div className="mt-6">
+                            <h4 className="text-lg" style={{ fontFamily: "'Bodoni Moda', serif" }}>
+                                Группа UNO QUADRO
+                            </h4>
+                            {/* Здесь можно добавить ссылку или описание, если потребуется */}
+                        </div>
                     </div>
                 </div>
 

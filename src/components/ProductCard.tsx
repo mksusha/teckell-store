@@ -38,6 +38,10 @@ export function ProductCard({
     const { toggleWishlist, isInWishlist } = useWishlist();
     const { addToCart, items } = useCart();
 
+    // Увеличиваем цены на 42%
+    const adjustedPrice = Math.round(price * 1.42);
+    const adjustedPriceMax = priceMax ? Math.round(priceMax * 1.42) : undefined;
+
     const isFavorite = isInWishlist(id);
     const [isInCart, setIsInCart] = useState(false);
     const [showAddedAnimation, setShowAddedAnimation] = useState(false);
@@ -72,7 +76,7 @@ export function ProductCard({
             addToCart({
                 product_id: id,
                 name,
-                price,
+                price: adjustedPrice, // используем новую цену
                 image,
                 quantity: 1
             });
@@ -178,14 +182,14 @@ export function ProductCard({
                 </Link>
 
                 <p className="product-price mt-2 text-sm md:text-base font-semibold text-gray-800">
-                    €{formatPrice(price)}
+                    €{formatPrice(adjustedPrice)}
                     <span className="text-[#a09d98] font-normal text-[10px] ml-1">
                         {priceSuffix}
                     </span>
-                    {priceMax && (
+                    {adjustedPriceMax && (
                         <>
                             <span className="text-[#a09d98] mx-1">–</span>
-                            €{formatPrice(priceMax)}
+                            €{formatPrice(adjustedPriceMax)}
                             <span className="text-[#a09d98] font-normal text-[10px] ml-1">
                                 {priceSuffix}
                             </span>

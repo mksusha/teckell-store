@@ -128,6 +128,21 @@ export function Header() {
         return scrolled ? "/logo.svg" : "/logo.svg";
     };
 
+    // Функция для цвета подписи под логотипом
+    // Функция для цвета подписи под логотипом (только чёрный или белый)
+    const getSubtitleClass = () => {
+        // Страницы, где фон при скролле становится белым (контакты, поиск, избранное)
+        if (isContactPage || isSearchPage || isWishlistPage) {
+            return "text-black"; // всегда чёрный (на белом фоне и на прозрачном тоже)
+        }
+        // Для страниц товара: при скролле фон чёрный → подпись белая, иначе чёрная (на прозрачном фоне)
+        if (isProductPage) {
+            return scrolled ? "text-white" : "text-black";
+        }
+        // Для остальных страниц (главная, категории): при скролле фон чёрный → белая, иначе белая (на прозрачном фоне)
+        return scrolled ? "text-white" : "text-white";
+    };
+
     // Основные категории для отображения
     const mainCategories = [
         { id: "foosball", name: "Настольный футбол", count: 9, slug: "foosball-tables" },
@@ -158,15 +173,14 @@ export function Header() {
             <header className="fixed top-0 left-0 right-0 z-50">
                 {/* Верхняя панель */}
                 <div
-                    className={`hidden md:block bg-[rgb(207,181,59)]/50 text-white text-xs transition-all duration-300 overflow-hidden ${
+                    className={`hidden md:block bg-[rgb(255,128,0)]/60 text-white text-xs transition-all duration-300 overflow-hidden ${
                         scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
                     }`}
                     style={{height: scrolled ? 0 : '30px'}}
                 >
                     <div className="container mx-auto px-6 py-2 flex items-center justify-between">
-                        <Link href="https://www.teckell.com" className="hover:text-white/80 transition-colors">
-                            ПЕРЕЙТИ НА ОФИЦИАЛЬНЫЙ САЙТ TECKELL
-                        </Link>
+                        ОФИЦИАЛЬНЫЙ ПРЕДСТАВИТЕЛЬ В РОССИИ И СНГ
+
 
                         <div className="flex items-center gap-6">
                             {/* Контактные телефоны */}
@@ -222,7 +236,6 @@ export function Header() {
                         </div>
                     </div>
                 </div>
-
                 {/* Основной header */}
                 <div
                     className={`transition-all duration-300 ${getHeaderBgClass()}`}
@@ -240,25 +253,32 @@ export function Header() {
                             >
                                 {isMenuOpen ? <X size={20}/> : <Menu size={20}/>}
                                 <span className="text-xs font-semibold tracking-wider hidden md:inline">
-                                    МЕНЮ
-                                </span>
+                    МЕНЮ
+                </span>
                             </button>
 
-                            {/* Логотип */}
-                            <Link
-                                href="/"
-                                className="absolute left-1/2 transform -translate-x-1/2"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                <Image
-                                    src={getLogoSrc()}
-                                    alt="Teckell"
-                                    width={120}
-                                    height={40}
-                                    className="w-auto h-8 md:h-10"
-                                    priority
-                                />
-                            </Link>
+                            {/* Логотип с подписью */}
+                            <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+                                <Link
+                                    href="/"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <Image
+                                        src={getLogoSrc()}
+                                        alt="Teckell"
+                                        width={120}
+                                        height={40}
+                                        className="w-auto h-8 md:h-10"
+                                        priority
+                                    />
+                                </Link>
+                                <span
+                                    suppressHydrationWarning
+                                    className={`text-[10px] md:text-xs ${getSubtitleClass()} tracking-wider mt-0.5 md:mt-1 whitespace-nowrap`}
+                                >
+                                    Классические игры класса люкс из Италии
+                                </span>
+                            </div>
 
                             {/* Иконки */}
                             <div className="flex items-center gap-3 md:gap-4">
@@ -284,11 +304,10 @@ export function Header() {
                                     {wishlistCount > 0 && (
                                         <span
                                             className="absolute -top-2 -right-2 md:hidden bg-[#c9b037] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                            {wishlistCount}
-                                        </span>
+                            {wishlistCount}
+                        </span>
                                     )}
                                 </Link>
-
                                 {/* Кнопка корзины */}
                                 <button
                                     onClick={() => setIsCartOpen(true)}
